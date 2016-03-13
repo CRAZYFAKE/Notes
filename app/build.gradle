@@ -1,0 +1,134 @@
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+def packTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC"))
+}
+
+def projectUrl = "https://github.com/lguipeng/Notes"
+def blogUrl = "http://www.jianshu.com/users/f612d54d668e/latest_articles"
+def appDownloadUrl = "http://notes.55058a091d225.d01.nanoyun.com/release/notes.apk"
+def aboutAppUrl = "http://www.jianshu.com/p/640a7f2fe0c5"
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def weChatId = properties.getProperty('WECHAT_ID')
+def everNoteKey = properties.getProperty('EVER_NOTE_KEY')
+def everNoteSecret = properties.getProperty('EVER_NOTE_SECRET')
+android {
+    signingConfigs {
+        debug {
+
+        }
+        release {
+            //setting your signing.properties
+            //first, add signing.properties to ./app/
+            //second, add property STORE_FILE, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+        }
+    }
+    compileSdkVersion Integer.parseInt(ANDROID_BUILD_COMPILE_SDK_VERSION)
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+    defaultConfig {
+        applicationId "com.yyx.note"
+        minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(ANDROID_BUILD_TARGET_SDK_VERSION)
+        versionCode Integer.parseInt(VERSION_CODE)
+        versionName VERSION_NAME
+
+        buildConfigField "String", "WECHAT_ID", "\"${weChatId}\""
+        buildConfigField "String", "EVER_NOTE_KEY", "\"${everNoteKey}\""
+        buildConfigField "String", "EVER_NOTE_SECRET", "\"${everNoteSecret}\""
+        buildConfigField "String", "APP_DOWNLOAD_URL", "\"${appDownloadUrl}\""
+        buildConfigField "String", "PROJECT_URL", "\"${projectUrl}\""
+        buildConfigField "String", "BLOG_URL", "\"${blogUrl}\""
+        buildConfigField "String", "ABOUT_APP_URL", "\"${aboutAppUrl}\""
+    }
+    buildTypes {
+
+        debug {
+            versionNameSuffix " Beta"
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                File outputDirectory = new File(outputFile.parent);
+                def fileName
+                if (variant.buildType.name == "release") {
+                    fileName = "notes_v${defaultConfig.versionName}_${packTime()}.apk"
+                }else{
+                    fileName = "notes_beta.apk"
+                }
+                output.outputFile = new File(outputDirectory, fileName)
+            }
+        }
+
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+
+File propFile = file('signing.properties');
+if (propFile.exists()) {
+    def Properties props = new Properties()
+    props.load(new FileInputStream(propFile))
+    if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    android.buildTypes.release.signingConfig = null
+}
+
+retrolambda {
+    //javaVersion JavaVersion.VERSION_1_6
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile 'com.rengwuxian.materialedittext:library:2.1.3'
+    compile 'com.google.dagger:dagger:2.0.2'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile project(':orm-library')
+    compile project(':evernote-sdk')
+    compile project(':md-preference')
+}
