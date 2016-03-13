@@ -9,9 +9,6 @@ import com.lguipeng.notes.ui.fragments.SettingFragment;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by lgp on 2014/10/30.
- */
 public class PreferenceUtils{
 
     private SharedPreferences sharedPreferences;

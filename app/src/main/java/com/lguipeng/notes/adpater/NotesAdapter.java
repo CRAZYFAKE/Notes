@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by lgp on 2015/4/6.
- */
 public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filterable{
 
     private final List<SNote> originalList;

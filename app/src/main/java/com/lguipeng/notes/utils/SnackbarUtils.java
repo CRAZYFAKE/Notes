@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-
-/**
- * Author: lgp
- * Date: 2014/12/31.
- */
 public class SnackbarUtils {
 
     public static final int DURATION = Snackbar.LENGTH_LONG / 2 ;

@@ -20,9 +20,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by lgp on 2015/5/24.
- */
 public abstract class BaseActivity extends AppCompatActivity {
     public final static String IS_START_ANIM = "IS_START_ANIM";
     public final static String IS_CLOSE_ANIM = "IS_CLOSE_ANIM";

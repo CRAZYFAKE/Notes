@@ -15,10 +15,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Author: lgp
- * Date: 2014/12/31.
- */
 public class FileUtils {
 
     public final static String SD_ROOT_DIR = Environment.getExternalStorageDirectory().getAbsolutePath();

@@ -8,9 +8,6 @@ import com.lguipeng.notes.injector.ContextLifeCycle;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by lgp on 2015/5/26.
- */
 @Module
 public class ActivityModule {
     private final android.app.Activity activity;

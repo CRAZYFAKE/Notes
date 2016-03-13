@@ -4,9 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-/**
- * Created by lgp on 2015/6/11.
- */
 public class FixedRecyclerView extends RecyclerView {
     public FixedRecyclerView(Context context) {
         super(context);

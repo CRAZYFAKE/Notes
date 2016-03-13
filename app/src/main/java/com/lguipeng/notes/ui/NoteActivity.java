@@ -28,9 +28,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-/**
- * Created by lgp on 2015/5/25.
- */
 public class NoteActivity extends BaseActivity implements NoteView {
     @Bind(R.id.toolbar)
     Toolbar toolbar;

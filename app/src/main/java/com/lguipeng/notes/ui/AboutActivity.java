@@ -40,9 +40,6 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-/**
- * Created by lgp on 2015/5/25.
- */
 public class AboutActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;

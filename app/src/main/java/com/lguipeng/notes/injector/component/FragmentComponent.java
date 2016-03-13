@@ -6,9 +6,6 @@ import com.lguipeng.notes.ui.fragments.SettingFragment;
 
 import dagger.Component;
 
-/**
- * Created by lgp on 2015/9/3.
- */
 @Fragment
 @Component(dependencies = {ActivityComponent.class}, modules = {FragmentModule.class})
 public interface FragmentComponent {

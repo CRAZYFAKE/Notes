@@ -5,9 +5,6 @@ import android.support.annotation.StringRes;
 import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.views.View;
 
-/**
- * Created by lgp on 2015/9/4.
- */
 public interface NoteView extends View {
     void finishView();
     void setToolbarTitle(String title);

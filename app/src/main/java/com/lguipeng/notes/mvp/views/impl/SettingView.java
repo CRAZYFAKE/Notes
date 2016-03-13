@@ -5,10 +5,6 @@ import android.support.annotation.StringRes;
 
 import com.lguipeng.notes.mvp.views.View;
 
-
-/**
- * Created by lgp on 2015/9/5.
- */
 public interface SettingView extends View {
     void findPreference();
     void setRightHandModePreferenceChecked(boolean checked);

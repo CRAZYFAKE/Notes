@@ -12,9 +12,6 @@ import com.lguipeng.notes.adpater.base.BaseListAdapter;
 
 import java.util.List;
 
-/**
- * Created by lgp on 2014/8/27.
- */
 public abstract class SimpleListAdapter extends BaseListAdapter<String> {
 
     public SimpleListAdapter(Context mContext, List<String> list) {

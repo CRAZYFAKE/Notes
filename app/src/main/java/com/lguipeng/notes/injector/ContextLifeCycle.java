@@ -7,9 +7,6 @@ import javax.inject.Qualifier;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Created by lgp on 2015/9/4.
- */
 @Qualifier
 @Documented
 @Retention(RUNTIME)

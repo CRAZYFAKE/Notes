@@ -30,9 +30,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Created by lgp on 2015/5/26.
- */
 public class SettingFragment extends PreferenceFragment implements SettingView{
     public static final String PREFERENCE_FILE_NAME = "note.settings";
     private CheckBoxPreference rightHandModePreference;

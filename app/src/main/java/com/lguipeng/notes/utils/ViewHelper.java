@@ -3,9 +3,6 @@ package com.lguipeng.notes.utils;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
-/**
- * Created by lgp on 2015/5/27.
- */
 public class ViewHelper {
     public static void clear(View v) {
         ViewCompat.setAlpha(v, 1);

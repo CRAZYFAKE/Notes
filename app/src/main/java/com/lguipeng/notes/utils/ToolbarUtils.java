@@ -6,9 +6,6 @@ import android.support.v7.widget.Toolbar;
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.ui.BaseActivity;
 
-/**
- * Created by lgp on 2015/7/19.
- */
 public class ToolbarUtils {
 
     public static void initToolbar(Toolbar toolbar, AppCompatActivity activity){

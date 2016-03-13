@@ -48,9 +48,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-/**
- * Created by lgp on 2015/5/24.
- */
 public class MainActivity extends BaseActivity implements MainView {
     @Bind(R.id.toolbar)
     Toolbar toolbar;

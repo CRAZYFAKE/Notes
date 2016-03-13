@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import com.lguipeng.notes.R;
 
-/**
- * Created by lgp on 2015/4/6.
- */
 public class NotesItemViewHolder extends RecyclerView.ViewHolder{
 
     private final TextView mNoteLabelTextView;

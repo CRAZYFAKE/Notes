@@ -13,9 +13,6 @@ import android.view.ViewGroup;
 
 import com.lguipeng.notes.view.BetterFab;
 
-/**
- * Created by lgp on 2015/8/2.
- */
 public class FabBehavior extends FloatingActionButton.Behavior{
 
     public FabBehavior(Context context, AttributeSet attrs) {

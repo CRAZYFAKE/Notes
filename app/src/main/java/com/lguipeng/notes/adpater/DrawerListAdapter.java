@@ -6,9 +6,6 @@ import com.lguipeng.notes.R;
 
 import java.util.List;
 
-/**
- * Created by lgp on 2015/5/24.
- */
 public class DrawerListAdapter extends SimpleListAdapter{
 
     public DrawerListAdapter(Context mContext, List<String> list) {

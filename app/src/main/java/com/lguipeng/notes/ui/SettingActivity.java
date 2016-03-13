@@ -14,9 +14,6 @@ import com.lguipeng.notes.ui.fragments.SettingFragment;
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
-/**
- * Created by lgp on 2015/5/24.
- */
 public class SettingActivity extends BaseActivity{
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Override

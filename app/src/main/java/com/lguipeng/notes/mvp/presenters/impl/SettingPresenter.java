@@ -38,9 +38,6 @@ import de.greenrobot.event.EventBus;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by lgp on 2015/9/5.
- */
 public class SettingPresenter implements Presenter, DialogInterface.OnClickListener{
     private SettingView view;
     private final Context mContext;

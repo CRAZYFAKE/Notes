@@ -5,9 +5,6 @@ import android.support.v7.app.AlertDialog;
 
 import com.lguipeng.notes.R;
 
-/**
- * Created by lgp on 2015/7/19.
- */
 public class DialogUtils {
 
     public static AlertDialog.Builder makeDialogBuilderByTheme(Context context, ThemeUtils.Theme theme){

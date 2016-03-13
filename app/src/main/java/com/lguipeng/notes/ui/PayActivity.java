@@ -7,9 +7,6 @@ import com.lguipeng.notes.R;
 
 import butterknife.Bind;
 
-/**
- * Created by lgp on 2015/6/1.
- */
 public class PayActivity extends BaseActivity{
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Override

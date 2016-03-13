@@ -7,9 +7,6 @@ import com.lguipeng.notes.injector.component.AppComponent;
 import com.lguipeng.notes.injector.component.DaggerAppComponent;
 import com.lguipeng.notes.injector.module.AppModule;
 
-/**
- * Created by lgp on 2015/5/24.
- */
 public class App extends Application{
     private AppComponent mAppComponent;
     @Override

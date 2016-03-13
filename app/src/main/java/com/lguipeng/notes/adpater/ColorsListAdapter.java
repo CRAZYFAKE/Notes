@@ -11,9 +11,6 @@ import com.lguipeng.notes.adpater.base.BaseListAdapter;
 
 import java.util.List;
 
-/**
- * Created by lgp on 2015/6/7.
- */
 public class ColorsListAdapter extends BaseListAdapter<Integer> {
 
     private int check;
@@ -27,17 +24,17 @@ public class ColorsListAdapter extends BaseListAdapter<Integer> {
     @Override
     public View bindView(int position, View convertView, ViewGroup parent) {
         Holder holder;
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.colors_image_layout, null);
             holder = new Holder();
-            holder.imageView1 = (ImageView)convertView.findViewById(R.id.img_1);
-            holder.imageView2 = (ImageView)convertView.findViewById(R.id.img_2);
+            holder.imageView1 = (ImageView) convertView.findViewById(R.id.img_1);
+            holder.imageView2 = (ImageView) convertView.findViewById(R.id.img_2);
             convertView.setTag(holder);
-        }else{
-            holder = (Holder)convertView.getTag();
+        } else {
+            holder = (Holder) convertView.getTag();
         }
         holder.imageView1.setImageResource(list.get(position));
-        if (checkItem == position){
+        if (checkItem == position) {
             holder.imageView2.setImageResource(R.drawable.ic_done_white);
         }
         return convertView;

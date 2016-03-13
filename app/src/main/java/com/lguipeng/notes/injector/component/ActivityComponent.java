@@ -13,9 +13,6 @@ import net.tsz.afinal.FinalDb;
 
 import dagger.Component;
 
-/**
- * Created by lgp on 2015/9/2.
- */
 @Activity
 @Component(dependencies = AppComponent.class, modules = {ActivityModule.class})
 public interface ActivityComponent {

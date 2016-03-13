@@ -11,9 +11,6 @@ import net.tsz.afinal.annotation.sqlite.Table;
 
 import java.io.Serializable;
 
-/**
- * Created by lgp on 2015/5/25.
- */
 @Table(name = "notes")
 public class SNote implements Serializable{
     private int id;

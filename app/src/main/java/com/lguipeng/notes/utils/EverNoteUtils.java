@@ -31,9 +31,6 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-/**
- * Created by lgp on 2015/6/12.
- */
 public class EverNoteUtils {
 
     private EvernoteSession mEvernoteSession;
@@ -47,7 +44,7 @@ public class EverNoteUtils {
     public static final String NOTE_BOOK_NAME = "SNotes";
 
     @Inject
-    public EverNoteUtils( @ContextLifeCycle("App") Context mContext, ThreadExecutorPool pool, FinalDb mFinalDb, PreferenceUtils mPreferenceUtils) {
+    public EverNoteUtils(@ContextLifeCycle("App") Context mContext, ThreadExecutorPool pool, FinalDb mFinalDb, PreferenceUtils mPreferenceUtils) {
         mEvernoteSession = EvernoteSession.getInstance();
         this.mPreferenceUtils = mPreferenceUtils;
         this.mThreadExecutorPool = pool;
@@ -58,33 +55,33 @@ public class EverNoteUtils {
         return mEvernoteSession != null && mEvernoteSession.isLoggedIn();
     }
 
-    public void auth(Activity activity){
+    public void auth(Activity activity) {
         if (activity == null)
             return;
         mEvernoteSession.authenticate(activity);
     }
 
-    public void logout(){
+    public void logout() {
         mEvernoteSession.logOut();
         mPreferenceUtils.removeKey(PreferenceUtils.EVERNOTE_ACCOUNT_KEY);
     }
 
-    public User getUser() throws Exception{
+    public User getUser() throws Exception {
         return mEvernoteSession.getEvernoteClientFactory()
                 .getUserStoreClient().getUser();
     }
 
-    public void getUser(EvernoteCallback<User> callback) throws Exception{
+    public void getUser(EvernoteCallback<User> callback) throws Exception {
         mEvernoteSession.getEvernoteClientFactory()
                 .getUserStoreClient().getUserAsync(callback);
     }
 
     public String getUserAccount(User user) {
-        if (user != null){
+        if (user != null) {
             String accountInfo = user.getEmail();
-            if (!TextUtils.isEmpty(accountInfo)){
+            if (!TextUtils.isEmpty(accountInfo)) {
                 return accountInfo;
-            }else {
+            } else {
                 accountInfo = user.getUsername();
             }
             mPreferenceUtils.saveParam(PreferenceUtils.EVERNOTE_ACCOUNT_KEY, accountInfo);
@@ -93,16 +90,16 @@ public class EverNoteUtils {
         return "";
     }
 
-    private void makeSureNoteBookExist(String notebookName)throws Exception{
+    private void makeSureNoteBookExist(String notebookName) throws Exception {
         NotesLog.d("");
         String guid = mPreferenceUtils
                 .getStringParam(PreferenceUtils.EVERNOTE_NOTEBOOK_GUID_KEY);
-        if (!TextUtils.isEmpty(guid)){
+        if (!TextUtils.isEmpty(guid)) {
             Notebook notebook = findNotebook(guid);
-            if (notebook != null && TextUtils.equals(notebook.getName(), notebookName)){
+            if (notebook != null && TextUtils.equals(notebook.getName(), notebookName)) {
                 mPreferenceUtils.saveParam(PreferenceUtils.EVERNOTE_NOTEBOOK_GUID_KEY,
                         notebook.getGuid());
-            }else {
+            } else {
                 tryCreateNoteBook(notebookName);
             }
         } else {
@@ -142,7 +139,7 @@ public class EverNoteUtils {
         return notebook;
     }
 
-    private List<Notebook> listNotebooks() throws Exception{
+    private List<Notebook> listNotebooks() throws Exception {
         List<Notebook> books = new ArrayList<>();
         try {
             books = mEvernoteSession.getEvernoteClientFactory()
@@ -153,7 +150,7 @@ public class EverNoteUtils {
         return books;
     }
 
-    private Notebook tryCreateNoteBook(String bookName) throws Exception{
+    private Notebook tryCreateNoteBook(String bookName) throws Exception {
         Notebook notebook = new Notebook();
         notebook.setName(bookName);
         try {
@@ -162,11 +159,11 @@ public class EverNoteUtils {
             mPreferenceUtils.saveParam(PreferenceUtils.EVERNOTE_NOTEBOOK_GUID_KEY
                     , result.getGuid());
             return result;
-        }catch (EDAMUserException e){
+        } catch (EDAMUserException e) {
             if (e.getErrorCode() == EDAMErrorCode.DATA_CONFLICT) {
                 List<Notebook> books = listNotebooks();
-                for (Notebook book : books){
-                    if (TextUtils.equals(book.getName(), bookName)){
+                for (Notebook book : books) {
+                    if (TextUtils.equals(book.getName(), bookName)) {
                         mPreferenceUtils.saveParam(PreferenceUtils.EVERNOTE_NOTEBOOK_GUID_KEY
                                 , book.getGuid());
                         return book;
@@ -178,7 +175,7 @@ public class EverNoteUtils {
         }
     }
 
-    private Note createNote(SNote sNote) throws Exception{
+    private Note createNote(SNote sNote) throws Exception {
         if (sNote == null)
             return null;
         Note note = sNote.parseToNote();
@@ -198,7 +195,7 @@ public class EverNoteUtils {
         return result;
     }
 
-    private Note pushUpdateNote(SNote sNote) throws Exception{
+    private Note pushUpdateNote(SNote sNote) throws Exception {
         Note updateNote = sNote.parseToNote();
         updateNote.setGuid(sNote.getGuid());
         updateNote.setActive(true);
@@ -210,7 +207,7 @@ public class EverNoteUtils {
         return result;
     }
 
-    private void pullUpdateNote(SNote sNote) throws Exception{
+    private void pullUpdateNote(SNote sNote) throws Exception {
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
                 .getNote(sNote.getGuid(), true, false, false, false);
         sNote.parseFromNote(note);
@@ -218,7 +215,7 @@ public class EverNoteUtils {
         mFinalDb.update(sNote);
     }
 
-    private void loadEverNote(String guid)throws Exception{
+    private void loadEverNote(String guid) throws Exception {
         if (TextUtils.isEmpty(guid))
             return;
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
@@ -228,58 +225,58 @@ public class EverNoteUtils {
         mFinalDb.saveBindId(sNote);
     }
 
-    private void deleteNote(String guid) throws Exception{
+    private void deleteNote(String guid) throws Exception {
         if (TextUtils.isEmpty(guid))
             return;
         mEvernoteSession.getEvernoteClientFactory()
                 .getNoteStoreClient().deleteNote(guid);
     }
 
-    private void deleteLocalNote(String guid){
+    private void deleteLocalNote(String guid) {
         if (TextUtils.isEmpty(guid))
             return;
         try {
             mFinalDb.deleteByWhere(SNote.class, "guid = '" + guid + "'");
-        }catch (Exception e){
+        } catch (Exception e) {
             NotesLog.e("delete local note error");
             e.printStackTrace();
         }
     }
 
-    public void expungeNote(String guid) throws Exception{
+    public void expungeNote(String guid) throws Exception {
         if (TextUtils.isEmpty(guid))
             return;
         mEvernoteSession.getEvernoteClientFactory()
                 .getNoteStoreClient().expungeNote(guid);
     }
 
-    public boolean pushNote(SNote sNote)throws Exception{
+    public boolean pushNote(SNote sNote) throws Exception {
         if (sNote == null)
             return false;
-        if (sNote.hasReadyRemove()){
-            if (!TextUtils.isEmpty(sNote.getGuid())){
+        if (sNote.hasReadyRemove()) {
+            if (!TextUtils.isEmpty(sNote.getGuid())) {
                 deleteNote(sNote.getGuid());
             }
             sNote.setStatus(SNote.Status.IDLE);
             mFinalDb.update(sNote);
-        }else if(sNote.hasReadyNewPush()){
+        } else if (sNote.hasReadyNewPush()) {
             createNote(sNote);
-        }else if (sNote.hasReadyUpdatePush()){
+        } else if (sNote.hasReadyUpdatePush()) {
             pushUpdateNote(sNote);
         }
         return true;
     }
 
-    public void pushNotes() throws Exception{
+    public void pushNotes() throws Exception {
         NotesLog.d("");
         List<SNote> sNotes = mFinalDb.findAll(SNote.class);
-        for (SNote sNote : sNotes){
+        for (SNote sNote : sNotes) {
             pushNote(sNote);
         }
         NotesLog.d("");
     }
 
-    public void pullNotes() throws Exception{
+    public void pullNotes() throws Exception {
         NotesLog.d("");
         NoteFilter noteFilter = new NoteFilter();
         noteFilter.setOrder(NoteSortOrder.UPDATED.getValue());
@@ -294,12 +291,12 @@ public class EverNoteUtils {
         List<SNote> sNoteList = mFinalDb.findAllByWhere(SNote.class,
                 "type != " + SNote.NoteType.TRASH.getValue());
         List<String> guids = new ArrayList<>();
-        for (SNote note : sNoteList){
+        for (SNote note : sNoteList) {
             guids.add(note.getGuid());
         }
 
-        if (counts == null || counts.getNotebookCounts() == null){
-            for (String deleteGuid :guids){
+        if (counts == null || counts.getNotebookCounts() == null) {
+            for (String deleteGuid : guids) {
                 deleteLocalNote(deleteGuid);
             }
             return;
@@ -311,29 +308,29 @@ public class EverNoteUtils {
                 .getNoteStoreClient()
                 .findNotesMetadata(noteFilter, 0, maxCount, spec);
 
-        for (NoteMetadata data : list.getNotes()){
+        for (NoteMetadata data : list.getNotes()) {
             guids.remove(data.getGuid());
             List<SNote> sNotes = mFinalDb.findAllByWhere(SNote.class, "guid = '" + data.getGuid() + "'");
-            if (sNotes != null && sNotes.size() > 0){
+            if (sNotes != null && sNotes.size() > 0) {
                 //update
                 SNote sNote = sNotes.get(0);
                 if (data.getUpdated() > sNote.getLastOprTime())
                     pullUpdateNote(sNote);
-            }else {
+            } else {
                 //pull
                 loadEverNote(data.getGuid());
             }
         }
-        if (guids.size() > 0){
-            for (String deleteGuid :guids){
+        if (guids.size() > 0) {
+            for (String deleteGuid : guids) {
                 deleteLocalNote(deleteGuid);
             }
         }
         NotesLog.d("");
     }
 
-    private boolean checkLogin(boolean silence){
-        if (!isLogin()){
+    private boolean checkLogin(boolean silence) {
+        if (!isLogin()) {
             if (!silence)
                 EventBus.getDefault().post(SyncResult.ERROR_NOT_LOGIN);
             return false;
@@ -341,27 +338,27 @@ public class EverNoteUtils {
         return true;
     }
 
-    public SyncResult checkLogin(){
-        if (!isLogin()){
+    public SyncResult checkLogin() {
+        if (!isLogin()) {
             return SyncResult.ERROR_NOT_LOGIN;
         }
         return SyncResult.SUCCESS;
     }
 
-    public SyncResult sync(final SyncType type){
-        if (checkLogin() == SyncResult.ERROR_NOT_LOGIN){
+    public SyncResult sync(final SyncType type) {
+        if (checkLogin() == SyncResult.ERROR_NOT_LOGIN) {
             return SyncResult.ERROR_NOT_LOGIN;
         }
         try {
             makeSureNoteBookExist(NOTE_BOOK_NAME);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            if (e instanceof EDAMUserException){
-                EDAMUserException exception = (EDAMUserException)e;
+            if (e instanceof EDAMUserException) {
+                EDAMUserException exception = (EDAMUserException) e;
                 EDAMErrorCode errorCode = exception.getErrorCode();
-                switch (errorCode){
+                switch (errorCode) {
                     case RATE_LIMIT_REACHED:
-                        if (!BuildConfig.DEBUG){
+                        if (!BuildConfig.DEBUG) {
                             return SyncResult.ERROR_FREQUENT_API;
                         }
                         break;
@@ -382,7 +379,7 @@ public class EverNoteUtils {
             return SyncResult.ERROR_OTHER;
         }
         try {
-            switch (type){
+            switch (type) {
                 case ALL:
                     pushNotes();
                     pullNotes();
@@ -395,18 +392,18 @@ public class EverNoteUtils {
                     break;
             }
             return SyncResult.SUCCESS;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return SyncResult.ERROR_OTHER;
         }
     }
 
-    private void handleException(Exception e){
+    private void handleException(Exception e) {
         if (e != null)
             e.printStackTrace();
     }
 
-    public enum SyncResult{
+    public enum SyncResult {
         START,
         ERROR_NOT_LOGIN,
         ERROR_FREQUENT_API,
@@ -421,7 +418,7 @@ public class EverNoteUtils {
         SUCCESS
     }
 
-    public enum SyncType{
+    public enum SyncType {
         ALL,
         PULL,
         PUSH

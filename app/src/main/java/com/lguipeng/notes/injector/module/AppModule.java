@@ -13,9 +13,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by lgp on 2015/5/26.
- */
 @Module
 public class AppModule {
     private final App app;

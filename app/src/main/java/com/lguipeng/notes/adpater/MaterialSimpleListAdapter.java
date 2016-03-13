@@ -10,9 +10,6 @@ import android.widget.TextView;
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.model.ShareListItem;
 
-/**
- * Created by lgp on 2015/6/10.
- */
 public class MaterialSimpleListAdapter extends ArrayAdapter<ShareListItem> {
 
     public MaterialSimpleListAdapter(Context context) {

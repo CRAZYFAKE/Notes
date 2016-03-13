@@ -9,9 +9,6 @@ import android.support.v4.app.ActivityCompat;
 
 import com.lguipeng.notes.utils.PermissionRequester;
 
-/**
- * Created by lgp on 2015/12/13.
- */
 @TargetApi(Build.VERSION_CODES.M)
 public class ShadowActivity extends Activity {
     private PermissionRequester.RequestPermissionsResultCallBack mPermissionsResultCallBack;

@@ -14,9 +14,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 
-/**
- * Created by lgp on 2015/9/4.
- */
 public class ObservableUtils {
 
     @Inject public ObservableUtils(){}

@@ -4,9 +4,6 @@ import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 
-/**
- * Created by lgp on 2015/8/2.
- */
 public class BetterFab extends FloatingActionButton{
     private boolean forceHide = false;
     public BetterFab(Context context, AttributeSet attrs) {

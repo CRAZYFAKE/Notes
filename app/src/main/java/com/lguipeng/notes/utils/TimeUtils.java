@@ -7,9 +7,6 @@ import com.lguipeng.notes.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by lgp on 2015/5/25.
- */
 public class TimeUtils {
     public static final long HOUR_Millis = 60 * 60 * 1000;
     public static final long HALF_HOUR_Millis = HOUR_Millis / 2;

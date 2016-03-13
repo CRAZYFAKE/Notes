@@ -6,9 +6,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 
-/**
- * Created by lgp on 2015/6/10.
- */
 public class ShareListItem {
 
     private Builder mBuilder;

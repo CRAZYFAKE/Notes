@@ -39,9 +39,6 @@ import de.greenrobot.event.EventBus;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by lgp on 2015/9/4.
- */
 public class MainPresenter implements Presenter, android.view.View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
         PopupMenu.OnMenuItemClickListener, MenuItemCompat.OnActionExpandListener {
     private MainView view;

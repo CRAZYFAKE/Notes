@@ -25,10 +25,6 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-/**
- * Created by lgp on 2015/9/4.
- */
-
 public class NotePresenter implements Presenter, android.view.View.OnFocusChangeListener,
         DialogInterface.OnClickListener, TextWatcher {
     private NoteView view;

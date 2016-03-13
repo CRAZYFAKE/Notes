@@ -8,9 +8,6 @@ import com.lguipeng.notes.mvp.views.View;
 
 import java.util.List;
 
-/**
- * Created by lgp on 2015/9/4.
- */
 public interface MainView extends View {
     void initToolbar();
     void initDrawerView(List<String> list);
