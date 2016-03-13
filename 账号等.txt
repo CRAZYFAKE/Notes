@@ -1,0 +1,12 @@
+´úÂë£ºhttp://git.oschina.net/apyyx/Notes
+
+oschina 137977693@qq.com yao7812138
+
+jdk 1.8
+
+gradle 2.6
+
+android studio 1.2.2
+
+´úÂë£ºhttps://github.com/CRAZYFAKE/Note
+github 553784520@qq.com
