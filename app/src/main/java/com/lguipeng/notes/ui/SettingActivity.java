@@ -14,8 +14,10 @@ import com.lguipeng.notes.ui.fragments.SettingFragment;
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
-public class SettingActivity extends BaseActivity{
-    @Bind(R.id.toolbar) Toolbar toolbar;
+public class SettingActivity extends BaseActivity {
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +40,12 @@ public class SettingActivity extends BaseActivity{
     }
 
     @Override
-    protected void initToolbar(){
+    protected void initToolbar() {
         super.initToolbar(toolbar);
         toolbar.setTitle(R.string.setting);
     }
 
-    private void init(){
+    private void init() {
         SettingFragment settingFragment = SettingFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.fragment_content, settingFragment).commit();
     }
@@ -51,7 +53,7 @@ public class SettingActivity extends BaseActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == EvernoteSession.REQUEST_CODE_LOGIN){
+        if (requestCode == EvernoteSession.REQUEST_CODE_LOGIN) {
             boolean result = resultCode == RESULT_OK;
             EventBus.getDefault().post(result);
         }

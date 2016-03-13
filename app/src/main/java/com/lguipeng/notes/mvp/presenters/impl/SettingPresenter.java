@@ -38,7 +38,7 @@ import de.greenrobot.event.EventBus;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class SettingPresenter implements Presenter, DialogInterface.OnClickListener{
+public class SettingPresenter implements Presenter, DialogInterface.OnClickListener {
     private SettingView view;
     private final Context mContext;
     private FinalDb mFinalDb;
@@ -50,6 +50,7 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
     private boolean isRightHandMode = false;
     private boolean isCardLayout = false;
     private MainPresenter.NotifyEvent<Void> event;
+
     @Inject
     public SettingPresenter(@ContextLifeCycle("Activity") Context mContext, FinalDb mFinalDb, EverNoteUtils mEverNoteUtils,
                             PreferenceUtils mPreferenceUtils, ObservableUtils mObservableUtils, FileUtils mFileUtils) {
@@ -70,7 +71,7 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         initEverAccountPreference();
     }
 
-    public void onViewCreated(android.view.View v){
+    public void onViewCreated(android.view.View v) {
         view.initPreferenceListView(v);
     }
 
@@ -86,19 +87,17 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
 
     @Override
     public void onPause() {
-
     }
 
     @Override
     public void onStop() {
-
     }
 
     @Override
     public void onDestroy() {
         //ignore change theme event
         if (event != null &&
-                event.getType() != MainPresenter.NotifyEvent.CHANGE_THEME){
+                event.getType() != MainPresenter.NotifyEvent.CHANGE_THEME) {
             EventBus.getDefault().post(event);
         }
         EventBus.getDefault().unregister(this);
@@ -106,57 +105,57 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
 
     @Override
     public void attachView(View v) {
-        this.view = (SettingView)v;
+        this.view = (SettingView) v;
     }
 
-    public boolean onPreferenceTreeClick(Preference preference){
-        if (view.isResume() && preference == null){
+    public boolean onPreferenceTreeClick(Preference preference) {
+        if (view.isResume() && preference == null) {
             return false;
         }
         String key = preference.getKey();
-        if (TextUtils.equals(key, getString(mContext, R.string.right_hand_mode_key))){
+        if (TextUtils.equals(key, getString(mContext, R.string.right_hand_mode_key))) {
             isRightHandMode = !isRightHandMode;
             mPreferenceUtils.saveParam(getString(mContext, R.string.right_hand_mode_key), isRightHandMode);
         }
 
-        if (TextUtils.equals(key, getString(mContext, R.string.card_note_item_layout_key))){
+        if (TextUtils.equals(key, getString(mContext, R.string.card_note_item_layout_key))) {
             isCardLayout = !isCardLayout;
             mPreferenceUtils.saveParam(getString(mContext, R.string.card_note_item_layout_key), isCardLayout);
         }
 
-        if (TextUtils.equals(key, getString(mContext, R.string.change_theme_key))){
+        if (TextUtils.equals(key, getString(mContext, R.string.change_theme_key))) {
             view.showThemeChooseDialog();
         }
 
-        if (TextUtils.equals(key, getString(mContext, R.string.pay_for_me_key))){
+        if (TextUtils.equals(key, getString(mContext, R.string.pay_for_me_key))) {
             Intent intent = new Intent(mContext, PayActivity.class);
             mContext.startActivity(intent);
         }
 
-        if (TextUtils.equals(key, mContext.getString(R.string.give_favor_key))){
+        if (TextUtils.equals(key, mContext.getString(R.string.give_favor_key))) {
             giveFavor();
         }
 
-        if (TextUtils.equals(key, mContext.getString(R.string.backup_local_key))){
+        if (TextUtils.equals(key, mContext.getString(R.string.backup_local_key))) {
             backupLocal();
         }
 
-        if (TextUtils.equals(key, mContext.getString(R.string.ever_note_account_key))){
-            if (mEverNoteUtils.isLogin()){
+        if (TextUtils.equals(key, mContext.getString(R.string.ever_note_account_key))) {
+            if (mEverNoteUtils.isLogin()) {
                 view.showUnbindEverNoteDialog();
-            }else {
+            } else {
                 authEverNote();
             }
         }
         return false;
     }
 
-    private void initFeedbackPreference(){
+    private void initFeedbackPreference() {
         Uri uri = Uri.parse("mailto:lgpszu@163.com");
         final Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
         PackageManager pm = mContext.getPackageManager();
         List<ResolveInfo> infos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (infos == null || infos.size() <= 0){
+        if (infos == null || infos.size() <= 0) {
             view.setFeedbackPreferenceSummary(mContext.getString(R.string.no_email_app_tip));
             return;
         }
@@ -167,20 +166,20 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         view.setFeedbackPreferenceClickListener(l);
     }
 
-    private void initEverAccountPreference(){
+    private void initEverAccountPreference() {
         String everAccount = mPreferenceUtils.getStringParam(PreferenceUtils.EVERNOTE_ACCOUNT_KEY);
-        if (!TextUtils.isEmpty(everAccount)){
+        if (!TextUtils.isEmpty(everAccount)) {
             onGetUserSuccess(everAccount);
-        }else {
-            if (mEverNoteUtils.isLogin()){
+        } else {
+            if (mEverNoteUtils.isLogin()) {
                 fillEverAccount();
-            }else {
+            } else {
                 onGetUserException(null);
             }
         }
     }
 
-    private void initOtherPreference(){
+    private void initOtherPreference() {
         isCardLayout = mPreferenceUtils.getBooleanParam(getString(mContext,
                 R.string.card_note_item_layout_key), true);
         isRightHandMode = mPreferenceUtils.getBooleanParam(getString(mContext,
@@ -189,20 +188,20 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         view.setRightHandModePreferenceChecked(isRightHandMode);
     }
 
-    private void onGetUserSuccess(String user){
+    private void onGetUserSuccess(String user) {
         view.setEverNoteAccountPreferenceSummary(user);
         view.setEverNoteAccountPreferenceTitle(mContext.getString(R.string.unbind_ever_note));
     }
 
-    private void onGetUserException(Throwable e){
+    private void onGetUserException(Throwable e) {
         view.setEverNoteAccountPreferenceTitle(mContext.getString(R.string.bind_ever_note));
         view.setEverNoteAccountPreferenceSummary("");
-        if (e != null){
+        if (e != null) {
             NotesLog.e(e.getMessage());
         }
     }
 
-    private void fillEverAccount(){
+    private void fillEverAccount() {
         mObservableUtils.getEverNoteUser(mEverNoteUtils)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -211,46 +210,46 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
                         , (e) -> onGetUserException(e));
     }
 
-    public void onEventMainThread(Boolean result){
+    public void onEventMainThread(Boolean result) {
         handleLoginResult(result);
     }
 
-    private void handleLoginResult(boolean result){
-        if (result){
+    private void handleLoginResult(boolean result) {
+        if (result) {
             try {
                 initEverAccountPreference();
                 view.showSnackbar(R.string.bind_ever_note_success);
-                if (event == null){
+                if (event == null) {
                     event = new MainPresenter.NotifyEvent<>();
                 }
                 event.setType(MainPresenter.NotifyEvent.REFRESH_LIST);
                 //EventBus.getDefault().post(MainActivity.MainEvent.REFRESH_LIST);
-            }catch (Exception e){
+            } catch (Exception e) {
                 view.showSnackbar(R.string.bind_ever_note_fail);
                 NotesLog.e(e.getMessage());
             }
-        }else {
+        } else {
             view.showSnackbar(R.string.bind_ever_note_fail);
         }
     }
 
-    private void authEverNote(){
+    private void authEverNote() {
         if (mContext instanceof Activity)
-            mEverNoteUtils.auth((Activity)mContext);
+            mEverNoteUtils.auth((Activity) mContext);
     }
 
-    private void giveFavor(){
-        try{
-            Uri uri = Uri.parse("market://details?id="+ mContext.getPackageName());
+    private void giveFavor() {
+        try {
+            Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
-        }catch(ActivityNotFoundException e){
+        } catch (ActivityNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void backupLocal(){
+    private void backupLocal() {
         //已经备份中，直接返回
         if (backuping)
             return;
@@ -260,7 +259,7 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
                 request(new PermissionRequester.RequestPermissionsResultCallBackImpl() {
                     @Override
                     public void onRequestPermissionsResult(String[] permission, int[] grantResult) {
-                        if (grantResult[0] != PackageManager.PERMISSION_GRANTED){
+                        if (grantResult[0] != PackageManager.PERMISSION_GRANTED) {
                             view.showSnackbar(R.string.backup_local_fail);
                             return;
                         }
@@ -281,7 +280,7 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        switch (which){
+        switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 mEverNoteUtils.logout();
                 onGetUserException(null);
@@ -301,8 +300,8 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         }
     }
 
-    private void notifyChangeTheme(){
-        if (event == null){
+    private void notifyChangeTheme() {
+        if (event == null) {
             event = new MainPresenter.NotifyEvent<>();
         }
         event.setType(MainPresenter.NotifyEvent.CHANGE_THEME);
@@ -311,7 +310,7 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         view.reload();
     }
 
-    private String getString(Context context, @StringRes int string){
+    private String getString(Context context, @StringRes int string) {
         if (context != null)
             return context.getString(string);
         return "";

@@ -7,8 +7,10 @@ import com.lguipeng.notes.R;
 
 import butterknife.Bind;
 
-public class PayActivity extends BaseActivity{
-    @Bind(R.id.toolbar) Toolbar toolbar;
+public class PayActivity extends BaseActivity {
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +23,7 @@ public class PayActivity extends BaseActivity{
 
 
     @Override
-    protected void initToolbar(){
+    protected void initToolbar() {
         super.initToolbar(toolbar);
         toolbar.setTitle(R.string.pay_for_me);
     }

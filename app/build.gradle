@@ -6,8 +6,10 @@ def packTime() {
     return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC"))
 }
 
-def projectUrl = "https://github.com/lguipeng/Notes"
-def blogUrl = "http://www.jianshu.com/users/f612d54d668e/latest_articles"
+//github地址
+def projectUrl = "https://github.com/CRAZYFAKE/Notes"
+//博客地址
+def blogUrl = "http://www.jianshu.com/users/5e822030b455/latest_articles"
 def appDownloadUrl = "http://notes.55058a091d225.d01.nanoyun.com/release/notes.apk"
 def aboutAppUrl = "http://www.jianshu.com/p/640a7f2fe0c5"
 

@@ -41,7 +41,7 @@ public class EverNoteUtils {
 
     private FinalDb mFinalDb;
 
-    public static final String NOTE_BOOK_NAME = "SNotes";
+    public static final String NOTE_BOOK_NAME = "简笔";
 
     @Inject
     public EverNoteUtils(@ContextLifeCycle("App") Context mContext, ThreadExecutorPool pool, FinalDb mFinalDb, PreferenceUtils mPreferenceUtils) {
