@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.lguipeng.notes.App;
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.injector.component.DaggerActivityComponent;
@@ -222,4 +223,5 @@ public class NoteActivity extends BaseActivity implements NoteView {
     public void onClick() {
         Snackbar.make(attach, "asdas", Snackbar.LENGTH_SHORT).show();
     }
+
 }
