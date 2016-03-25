@@ -9,7 +9,6 @@ import android.view.ViewGroup;
  * 自定义FloatingActionButton
  */
 public class BetterFab extends FloatingActionButton {
-
     private boolean isShown = true;
     private int ANIM_DURATION = 200;
     private boolean mVisible = false;

@@ -97,4 +97,8 @@
     <string name="just_now">just now</string>
     <string name="before_half_hour">a half of hour ago</string>
     <string name="default_label">No Title</string>
+    <!--添加附件-->
+    <string name="attach_image">image</string>
+    <string name="attach_audio">audio</string>
+    <string name="attach_file">file</string>
 </resources>

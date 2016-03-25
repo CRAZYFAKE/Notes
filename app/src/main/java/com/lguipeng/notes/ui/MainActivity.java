@@ -406,6 +406,11 @@ public class MainActivity extends BaseActivity implements MainView {
         return mainPresenter.onKeyDown(keyCode) || super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * 创建新的笔记
+     *
+     * @param view
+     */
     @OnClick(R.id.fab)
     public void newNote(View view) {
         mainPresenter.newNote();

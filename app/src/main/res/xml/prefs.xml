@@ -3,32 +3,29 @@
     <com.jenzz.materialpreference.PreferenceCategory android:title="@string/general_settings">
         <com.jenzz.materialpreference.CheckBoxPreference
             android:key="@string/right_hand_mode_key"
-            android:title="@string/right_hand_mode"
-            android:summary="@string/right_hand_mode_summary"/>
+            android:summary="@string/right_hand_mode_summary"
+            android:title="@string/right_hand_mode" />
         <com.jenzz.materialpreference.CheckBoxPreference
             android:key="@string/card_note_item_layout_key"
-            android:title="@string/card_note_item_layout"/>
+            android:title="@string/card_note_item_layout" />
         <com.jenzz.materialpreference.Preference
             android:key="@string/ever_note_account_key"
-            android:title="@string/bind_ever_note"/>
+            android:title="@string/bind_ever_note" />
         <com.jenzz.materialpreference.Preference
             android:key="@string/backup_local_key"
-            android:title="@string/backup_local"
-            android:summary="@string/backup_local_summary"/>
+            android:summary="@string/backup_local_summary"
+            android:title="@string/backup_local" />
         <com.jenzz.materialpreference.Preference
             android:key="@string/change_theme_key"
-            android:title="@string/change_theme"/>
+            android:title="@string/change_theme" />
     </com.jenzz.materialpreference.PreferenceCategory>
 
     <com.jenzz.materialpreference.PreferenceCategory android:title="@string/other">
         <com.jenzz.materialpreference.Preference
             android:key="@string/advice_feedback_key"
-            android:title="@string/advice_feedback"/>
+            android:title="@string/advice_feedback" />
         <com.jenzz.materialpreference.Preference
             android:key="@string/give_favor_key"
-            android:title="@string/give_favor"/>
-        <com.jenzz.materialpreference.Preference
-            android:key="@string/pay_for_me_key"
-            android:title="@string/pay_for_me_title"/>
+            android:title="@string/give_favor" />
     </com.jenzz.materialpreference.PreferenceCategory>
 </PreferenceScreen>

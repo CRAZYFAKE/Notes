@@ -36,7 +36,7 @@
     <color name="text_color_primary">#212121</color>
     <color name="text_second_color_primary">#727272</color>
 
-    <color name="grey" >#ffbebebe</color>
+    <color name="grey">#ffbebebe</color>
     <color name="grey_1">#9E9E9E</color>
     <color name="dark_grey">#FF080808</color>
     <color name="light_grey">#ffbebebe</color>
@@ -46,4 +46,8 @@
     <color name="toolbar_title_color">@android:color/white</color>
     <color name="toolbar_bg_color">@android:color/black</color>
     <color name="window_background">@android:color/white</color>
+    <color name="white">#fafafa</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
 </resources>

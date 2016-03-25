@@ -56,6 +56,7 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
     @Inject
     public MainPresenter(@ContextLifeCycle("Activity") Context context, FinalDb finalDb, PreferenceUtils preferenceUtils,
                          ObservableUtils mObservableUtils, EverNoteUtils everNoteUtils) {
+        //使用Dagger框架，新建MainPresenter对象时，获取Context、FinalDb等对象
         this.mContext = context;
         this.mFinalDb = finalDb;
         this.mPreferenceUtils = preferenceUtils;
@@ -273,13 +274,14 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         mObservableUtils.getLocalNotesByType(mFinalDb, mCurrentNoteTypePage.getValue())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((notes) -> {
-                    view.initRecyclerView(notes);
-                    view.showProgressWheel(false);
-                }, (e) -> {
-                    e.printStackTrace();
-                    view.showProgressWheel(false);
-                });
+                .subscribe(
+                        (notes) -> {
+                            view.initRecyclerView(notes);
+                            view.showProgressWheel(false);
+                        }, (e) -> {
+                            e.printStackTrace();
+                            view.showProgressWheel(false);
+                        });
     }
 
 

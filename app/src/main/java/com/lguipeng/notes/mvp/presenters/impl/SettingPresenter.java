@@ -19,7 +19,6 @@ import com.lguipeng.notes.injector.ContextLifeCycle;
 import com.lguipeng.notes.mvp.presenters.Presenter;
 import com.lguipeng.notes.mvp.views.View;
 import com.lguipeng.notes.mvp.views.impl.SettingView;
-import com.lguipeng.notes.ui.PayActivity;
 import com.lguipeng.notes.utils.EverNoteUtils;
 import com.lguipeng.notes.utils.FileUtils;
 import com.lguipeng.notes.utils.NotesLog;
@@ -126,12 +125,6 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         if (TextUtils.equals(key, getString(mContext, R.string.change_theme_key))) {
             view.showThemeChooseDialog();
         }
-
-        if (TextUtils.equals(key, getString(mContext, R.string.pay_for_me_key))) {
-            Intent intent = new Intent(mContext, PayActivity.class);
-            mContext.startActivity(intent);
-        }
-
         if (TextUtils.equals(key, mContext.getString(R.string.give_favor_key))) {
             giveFavor();
         }
@@ -150,8 +143,11 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         return false;
     }
 
+    /**
+     * 意见反馈，发送邮件，如果没有安装邮箱客户端会提示信息
+     */
     private void initFeedbackPreference() {
-        Uri uri = Uri.parse("mailto:lgpszu@163.com");
+        Uri uri = Uri.parse("mailto:553784520@qq.com");
         final Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
         PackageManager pm = mContext.getPackageManager();
         List<ResolveInfo> infos = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);

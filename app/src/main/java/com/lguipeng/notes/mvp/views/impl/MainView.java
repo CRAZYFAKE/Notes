@@ -29,11 +29,11 @@ public interface MainView extends View {
     boolean isRefreshing();
     void enableSwipeRefreshLayout(boolean enable);
     void setLayoutManager(RecyclerView.LayoutManager manager);
-    void initRecyclerView(List<SNote> notes);
-    void showTrashPopupMenu(android.view.View view, SNote note);
-    void showNormalPopupMenu(android.view.View view, SNote note);
-    void showDeleteForeverDialog(SNote note);
-    void showSnackbar(@StringRes int message);
+    void initRecyclerView(List<SNote> notes);//初始化界面，并且加载笔记
+    void showTrashPopupMenu(android.view.View view, SNote note);//显示“回收站”界面笔记的PopupMenu
+    void showNormalPopupMenu(android.view.View view, SNote note);//显示“笔记”界面笔记的PopupMenu
+    void showDeleteForeverDialog(SNote note);//提示用户是否永久删除笔记
+    void showSnackbar(@StringRes int message);//顯示SnackBar
     void showGoBindEverNoteSnackbar(@StringRes int message, @StringRes int action);
     void moveTaskToBack();
     void reCreate();

@@ -69,16 +69,50 @@
 
         <include layout="@layout/toolbar_shadow_layout" />
 
-        <com.lguipeng.notes.view.BetterFab
-            android:id="@+id/attach"
+        <com.lguipeng.notes.view.FloatingMenuHidable
+            android:id="@+id/attach_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_add_white"
-            app:layout_anchorGravity="bottom|right|end"
-            app:layout_behavior="com.lguipeng.notes.view.behavior.FabBehavior"
-            fab:fabSize="normal" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            fab:fab_rotation="90"
+            fab:fab_bitmap="@drawable/ic_attach"
+            app:fab_addButtonColorNormal="?attr/colorPrimary"
+            app:fab_addButtonColorPressed="?attr/colorPrimary"
+            fab:fab_labelStyle="@style/menu_labels_style">
+
+            <cc.trity.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fb_attach_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/green"
+                fab:fab_colorPressed="@color/dark_green"
+                fab:fab_icon="@drawable/ic_attach_image"
+                fab:fab_size="mini"
+                fab:fab_title="@string/attach_image" />
+
+            <cc.trity.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fb_attach_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/yellow"
+                fab:fab_colorPressed="@color/dark_yellow"
+                fab:fab_icon="@drawable/ic_attach_audio"
+                fab:fab_size="mini"
+                fab:fab_title="@string/attach_audio" />
+
+            <cc.trity.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fb_attach_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/red"
+                fab:fab_colorPressed="@color/dark_red"
+                fab:fab_icon="@drawable/ic_attach_file"
+                fab:fab_size="mini"
+                fab:fab_title="@string/attach_file" />
+        </com.lguipeng.notes.view.FloatingMenuHidable>
     </FrameLayout>
 
 </LinearLayout>

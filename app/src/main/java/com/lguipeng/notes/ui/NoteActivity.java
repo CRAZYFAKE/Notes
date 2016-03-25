@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.lguipeng.notes.App;
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.injector.component.DaggerActivityComponent;
@@ -21,13 +20,14 @@ import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.impl.NotePresenter;
 import com.lguipeng.notes.mvp.views.impl.NoteView;
 import com.lguipeng.notes.utils.DialogUtils;
-import com.lguipeng.notes.view.BetterFab;
+import com.lguipeng.notes.view.FloatingMenuHidable;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cc.trity.floatingactionbutton.FloatingActionButton;
 
 public class NoteActivity extends BaseActivity implements NoteView {
     @Bind(R.id.toolbar)
@@ -40,8 +40,15 @@ public class NoteActivity extends BaseActivity implements NoteView {
     TextView oprTimeLineTextView;
     @Inject
     NotePresenter notePresenter;
-    @Bind(R.id.attach)
-    BetterFab attach;
+    //添加附件按钮
+    @Bind(R.id.attach_content)
+    FloatingMenuHidable attachContent;
+    @Bind(R.id.fb_attach_image)
+    FloatingActionButton attachImage;
+    @Bind(R.id.fb_attach_audio)
+    FloatingActionButton attachAudio;
+    @Bind(R.id.fb_attach_file)
+    FloatingActionButton attachFile;
     private MenuItem doneMenuItem;
 
     @Override
@@ -52,6 +59,8 @@ public class NoteActivity extends BaseActivity implements NoteView {
     }
 
     private void initializePresenter() {
+        //attachContent.setBackgroundColor(getColorPrimary());
+        //设置添加附件按钮颜色
         notePresenter.attachView(this);
         notePresenter.attachIntent(getIntent());
     }
@@ -219,9 +228,19 @@ public class NoteActivity extends BaseActivity implements NoteView {
         inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
-    @OnClick(R.id.attach)
+    @OnClick(R.id.fb_attach_image)
     public void onClick() {
-        Snackbar.make(attach, "asdas", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(attachImage, "添加图片", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.fb_attach_audio)
+    public void onClick1() {
+        Snackbar.make(attachAudio, "添加音频", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.fb_attach_file)
+    public void onClick2() {
+        Snackbar.make(attachFile, "添加图片", Snackbar.LENGTH_SHORT).show();
     }
 
 }

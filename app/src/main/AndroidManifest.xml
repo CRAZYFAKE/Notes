@@ -47,11 +47,6 @@
         </activity>
 
         <activity
-            android:name=".ui.PayActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
             android:name=".ui.ShadowActivity"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />

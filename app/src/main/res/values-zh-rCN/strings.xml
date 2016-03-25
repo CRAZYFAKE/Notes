@@ -98,4 +98,8 @@
     <string name="just_now">刚刚</string>
     <string name="before_half_hour">半个小时之前</string>
     <string name="default_label">无标题</string>
+    <!--添加附件-->
+    <string name="attach_image">图片</string>
+    <string name="attach_audio">音频</string>
+    <string name="attach_file">文件</string>
 </resources>
