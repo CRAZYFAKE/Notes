@@ -26,15 +26,16 @@ import android.widget.ListView;
 
 import com.lguipeng.notes.App;
 import com.lguipeng.notes.R;
-import com.lguipeng.notes.adpater.base.BaseRecyclerViewAdapter;
 import com.lguipeng.notes.adpater.DrawerListAdapter;
 import com.lguipeng.notes.adpater.NotesAdapter;
 import com.lguipeng.notes.adpater.SimpleListAdapter;
+import com.lguipeng.notes.adpater.base.BaseRecyclerViewAdapter;
 import com.lguipeng.notes.injector.component.DaggerActivityComponent;
 import com.lguipeng.notes.injector.module.ActivityModule;
 import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.impl.MainPresenter;
 import com.lguipeng.notes.mvp.views.impl.MainView;
+import com.lguipeng.notes.task.FindNotebooksTask;
 import com.lguipeng.notes.utils.DialogUtils;
 import com.lguipeng.notes.utils.SnackbarUtils;
 import com.lguipeng.notes.utils.ToolbarUtils;
@@ -58,7 +59,7 @@ public class MainActivity extends BaseActivity implements MainView {
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.left_drawer_listview)
-    ListView mDrawerMenuListView;
+    ListView mDrawerMenuListView;//左滑的菜单栏，单选
     @Bind(R.id.left_drawer)
     View drawerRootView;
     @Bind(R.id.fab)
@@ -76,6 +77,7 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         launchWithNoAnim();
         super.onCreate(savedInstanceState);
+        new FindNotebooksTask().start(this, "personal");
         initializePresenter();
         mainPresenter.onCreate(savedInstanceState);
     }
@@ -367,10 +369,9 @@ public class MainActivity extends BaseActivity implements MainView {
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        //searchItem.expandActionView();
+        //搜索笔记，使用SearchView
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         ComponentName componentName = getComponentName();
-
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(componentName));
         searchView.setQueryHint(getString(R.string.search_note));
@@ -379,7 +380,6 @@ public class MainActivity extends BaseActivity implements MainView {
             public boolean onQueryTextSubmit(String s) {
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 recyclerAdapter.getFilter().filter(s);

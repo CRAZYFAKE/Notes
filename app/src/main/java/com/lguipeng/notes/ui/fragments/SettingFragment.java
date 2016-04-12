@@ -40,6 +40,7 @@ public class SettingFragment extends PreferenceFragment implements SettingView{
     private Preference everAccountPreference;
     @Inject SettingPresenter settingPresenter;
     private SettingActivity activity;
+
     public static SettingFragment newInstance(){
         SettingFragment fragment = new SettingFragment();
         return fragment;

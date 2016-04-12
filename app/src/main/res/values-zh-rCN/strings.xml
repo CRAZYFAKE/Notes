@@ -14,7 +14,8 @@
     <string name="give_favor">给应用点赞</string>
     <string name="sync">同步</string>
     <array name="drawer_content">
-        <item>简笔</item>
+        <item>笔记</item>
+        <item>笔记本</item>
         <item>回收站</item>
     </array>
     <string name="note_log_text" formatted="false">%s\u0020:\u0020%s</string>

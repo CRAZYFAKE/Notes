@@ -13,6 +13,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.injector.ContextLifeCycle;
@@ -183,11 +184,22 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         isRightHandMode = end;
     }
 
+    /**
+     * 左側侧边栏列表点击事件
+     * @param position
+     */
     public void onDrawerItemSelect(int position) {
         mCurrentNoteTypePage = SNote.NoteType.mapValueToStatus(position);
         switchNoteTypePage(mCurrentNoteTypePage);
         view.setDrawerItemChecked(position);
         switch (mCurrentNoteTypePage) {
+            case LIST:
+                try {
+                Toast.makeText(mContext,Boolean.toString(mEverNoteUtils.isLogin()), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             case TRASH:
                 view.showFab(false);
                 view.enableSwipeRefreshLayout(false);

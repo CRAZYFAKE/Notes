@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -162,6 +163,7 @@ public class NoteActivity extends BaseActivity implements NoteView {
         contentEditText.setOnFocusChangeListener(notePresenter);
         labelEditText.addTextChangedListener(notePresenter);
         contentEditText.addTextChangedListener(notePresenter);
+        attachContent.setVisibility(View.GONE);
     }
 
     @Override

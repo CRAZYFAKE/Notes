@@ -235,7 +235,8 @@ public class SNote implements Serializable {
      */
     public enum NoteType {
         NORMAL(0x00),
-        TRASH(0x01);
+        LIST(0x01),
+        TRASH(0x02);
         private int mValue;
 
         NoteType(int value) {

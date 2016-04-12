@@ -50,4 +50,12 @@
     <color name="black_semi_transparent">#B2000000</color>
     <color name="blue_semi_transparent">#805677fc</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
+
+    <color name="tb_dark_green">#005E37</color>
+    <color name="tb_action_mode_gray">#d8d8d8</color>
+    <color name="tb_bg">#2dbe60</color>
+    <color name="tb_text">#ffffff</color>
+    <color name="status_bar_green">#1e7f40</color>
+    <color name="nav_header_green">#54C078</color>
+
 </resources>

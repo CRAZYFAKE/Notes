@@ -127,6 +127,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
     compile project(':orm-library')
     compile project(':evernote-sdk')
     compile project(':md-preference')

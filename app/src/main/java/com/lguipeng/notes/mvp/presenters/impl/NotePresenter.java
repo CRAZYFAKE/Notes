@@ -183,6 +183,9 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
         view.setOperateTimeLineTextView(getOprTimeLineText(note));
     }
 
+    /**
+     * 保存笔记
+     */
     private void saveNote() {
         view.hideKeyBoard();
         if (TextUtils.isEmpty(view.getLabelText())) {

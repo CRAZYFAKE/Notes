@@ -51,21 +51,37 @@ public class EverNoteUtils {
         this.mFinalDb = mFinalDb;
     }
 
+    /**
+     * 获取是否登录
+     * @return
+     */
     public boolean isLogin() {
         return mEvernoteSession != null && mEvernoteSession.isLoggedIn();
     }
 
+    /**
+     * 跳转登录页面
+     * @param activity
+     */
     public void auth(Activity activity) {
         if (activity == null)
             return;
         mEvernoteSession.authenticate(activity);
     }
 
+    /**
+     * 登出
+     */
     public void logout() {
         mEvernoteSession.logOut();
         mPreferenceUtils.removeKey(PreferenceUtils.EVERNOTE_ACCOUNT_KEY);
     }
 
+    /**
+     * 获取用户
+     * @return 用戶
+     * @throws Exception
+     */
     public User getUser() throws Exception {
         return mEvernoteSession.getEvernoteClientFactory()
                 .getUserStoreClient().getUser();
@@ -90,7 +106,12 @@ public class EverNoteUtils {
         return "";
     }
 
-    private void makeSureNoteBookExist(String notebookName) throws Exception {
+    /**
+     * 获取笔记本是否存在
+     * @param notebookName
+     * @throws Exception
+     */
+    public void makeSureNoteBookExist(String notebookName) throws Exception {
         NotesLog.d("");
         String guid = mPreferenceUtils
                 .getStringParam(PreferenceUtils.EVERNOTE_NOTEBOOK_GUID_KEY);
@@ -108,7 +129,7 @@ public class EverNoteUtils {
         NotesLog.d("");
     }
 
-    private boolean hasNoteBookExist(String guid, String name) throws Exception {
+    public boolean hasNoteBookExist(String guid, String name) throws Exception {
         boolean result = false;
         try {
             Notebook notebook = findNotebook(guid);
@@ -126,7 +147,13 @@ public class EverNoteUtils {
         return result;
     }
 
-    private Notebook findNotebook(String guid) throws Exception {
+    /**
+     * 查找笔记本，根据笔记本guid
+     * @param guid
+     * @return
+     * @throws Exception
+     */
+    public Notebook findNotebook(String guid) throws Exception {
         Notebook notebook;
         try {
             notebook = mEvernoteSession.getEvernoteClientFactory()
@@ -139,7 +166,12 @@ public class EverNoteUtils {
         return notebook;
     }
 
-    private List<Notebook> listNotebooks() throws Exception {
+    /**
+     * 获取所有笔记本
+     * @return
+     * @throws Exception
+     */
+    public List<Notebook> listNotebooks() throws Exception {
         List<Notebook> books = new ArrayList<>();
         try {
             books = mEvernoteSession.getEvernoteClientFactory()
@@ -150,7 +182,13 @@ public class EverNoteUtils {
         return books;
     }
 
-    private Notebook tryCreateNoteBook(String bookName) throws Exception {
+    /**
+     * 创建笔记本
+     * @param bookName 笔记本名称
+     * @return
+     * @throws Exception
+     */
+    public Notebook tryCreateNoteBook(String bookName) throws Exception {
         Notebook notebook = new Notebook();
         notebook.setName(bookName);
         try {
@@ -175,7 +213,13 @@ public class EverNoteUtils {
         }
     }
 
-    private Note createNote(SNote sNote) throws Exception {
+    /**
+     * 新建笔记
+     * @param sNote 笔记
+     * @return
+     * @throws Exception
+     */
+    public Note createNote(SNote sNote) throws Exception {
         if (sNote == null)
             return null;
         Note note = sNote.parseToNote();
@@ -195,7 +239,13 @@ public class EverNoteUtils {
         return result;
     }
 
-    private Note pushUpdateNote(SNote sNote) throws Exception {
+    /**
+     * 更新笔记
+     * @param sNote 要更新的笔记
+     * @return
+     * @throws Exception
+     */
+    public Note pushUpdateNote(SNote sNote) throws Exception {
         Note updateNote = sNote.parseToNote();
         updateNote.setGuid(sNote.getGuid());
         updateNote.setActive(true);
@@ -207,7 +257,12 @@ public class EverNoteUtils {
         return result;
     }
 
-    private void pullUpdateNote(SNote sNote) throws Exception {
+    /**
+     *
+     * @param sNote
+     * @throws Exception
+     */
+    public void pullUpdateNote(SNote sNote) throws Exception {
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
                 .getNote(sNote.getGuid(), true, false, false, false);
         sNote.parseFromNote(note);
@@ -215,7 +270,12 @@ public class EverNoteUtils {
         mFinalDb.update(sNote);
     }
 
-    private void loadEverNote(String guid) throws Exception {
+    /**
+     * 获取笔记内容
+     * @param guid
+     * @throws Exception
+     */
+    public void loadEverNote(String guid) throws Exception {
         if (TextUtils.isEmpty(guid))
             return;
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
@@ -225,14 +285,23 @@ public class EverNoteUtils {
         mFinalDb.saveBindId(sNote);
     }
 
-    private void deleteNote(String guid) throws Exception {
+    /**
+     * 删除笔记
+     * @param guid
+     * @throws Exception
+     */
+    public void deleteNote(String guid) throws Exception {
         if (TextUtils.isEmpty(guid))
             return;
         mEvernoteSession.getEvernoteClientFactory()
                 .getNoteStoreClient().deleteNote(guid);
     }
 
-    private void deleteLocalNote(String guid) {
+    /**
+     * 删除本地笔记
+     * @param guid
+     */
+    public void deleteLocalNote(String guid) {
         if (TextUtils.isEmpty(guid))
             return;
         try {
@@ -250,6 +319,12 @@ public class EverNoteUtils {
                 .getNoteStoreClient().expungeNote(guid);
     }
 
+    /**
+     * 更新笔记
+     * @param sNote 笔记
+     * @return
+     * @throws Exception
+     */
     public boolean pushNote(SNote sNote) throws Exception {
         if (sNote == null)
             return false;
@@ -267,6 +342,10 @@ public class EverNoteUtils {
         return true;
     }
 
+    /**
+     * 更新笔记
+     * @throws Exception
+     */
     public void pushNotes() throws Exception {
         NotesLog.d("");
         List<SNote> sNotes = mFinalDb.findAll(SNote.class);
@@ -276,6 +355,10 @@ public class EverNoteUtils {
         NotesLog.d("");
     }
 
+    /**
+     * 更新笔记
+     * @throws Exception
+     */
     public void pullNotes() throws Exception {
         NotesLog.d("");
         NoteFilter noteFilter = new NoteFilter();
@@ -329,6 +412,11 @@ public class EverNoteUtils {
         NotesLog.d("");
     }
 
+    /**
+     * 检测登录
+     * @param silence
+     * @return
+     */
     private boolean checkLogin(boolean silence) {
         if (!isLogin()) {
             if (!silence)
@@ -338,6 +426,10 @@ public class EverNoteUtils {
         return true;
     }
 
+    /**
+     * 查看是否登录
+     * @return
+     */
     public SyncResult checkLogin() {
         if (!isLogin()) {
             return SyncResult.ERROR_NOT_LOGIN;
@@ -345,6 +437,11 @@ public class EverNoteUtils {
         return SyncResult.SUCCESS;
     }
 
+    /**
+     * 同步笔记
+     * @param type
+     * @return
+     */
     public SyncResult sync(final SyncType type) {
         if (checkLogin() == SyncResult.ERROR_NOT_LOGIN) {
             return SyncResult.ERROR_NOT_LOGIN;
