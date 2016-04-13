@@ -35,7 +35,6 @@ import com.lguipeng.notes.injector.module.ActivityModule;
 import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.impl.MainPresenter;
 import com.lguipeng.notes.mvp.views.impl.MainView;
-import com.lguipeng.notes.task.FindNotebooksTask;
 import com.lguipeng.notes.utils.DialogUtils;
 import com.lguipeng.notes.utils.SnackbarUtils;
 import com.lguipeng.notes.utils.ToolbarUtils;
@@ -77,7 +76,6 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         launchWithNoAnim();
         super.onCreate(savedInstanceState);
-        new FindNotebooksTask().start(this, "personal");
         initializePresenter();
         mainPresenter.onCreate(savedInstanceState);
     }

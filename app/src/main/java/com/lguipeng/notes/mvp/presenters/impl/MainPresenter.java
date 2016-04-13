@@ -13,7 +13,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.injector.ContextLifeCycle;
@@ -186,27 +185,32 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
 
     /**
      * 左側侧边栏列表点击事件
-     * @param position
+     * @param position 第一个位置为0
      */
     public void onDrawerItemSelect(int position) {
-        mCurrentNoteTypePage = SNote.NoteType.mapValueToStatus(position);
-        switchNoteTypePage(mCurrentNoteTypePage);
-        view.setDrawerItemChecked(position);
-        switch (mCurrentNoteTypePage) {
-            case LIST:
-                try {
-                Toast.makeText(mContext,Boolean.toString(mEverNoteUtils.isLogin()), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//        mCurrentNoteTypePage = SNote.NoteType.mapValueToStatus(position);
+//        switchNoteTypePage(mCurrentNoteTypePage);
+//        view.setDrawerItemChecked(position);
+//        switch (mCurrentNoteTypePage) {
+//            case LIST:
+//                break;
+//            case TRASH:
+//                view.showFab(false);
+//                view.enableSwipeRefreshLayout(false);
+//                break;
+//            default:
+//                view.showFab(true);
+//                view.enableSwipeRefreshLayout(true);
+//                break;
+//        }
+        switch (position){
+            case 0:
                 break;
-            case TRASH:
-                view.showFab(false);
-                view.enableSwipeRefreshLayout(false);
+            case 1:
+                break;
+            case 2:
                 break;
             default:
-                view.showFab(true);
-                view.enableSwipeRefreshLayout(true);
                 break;
         }
     }

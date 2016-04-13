@@ -20,7 +20,7 @@ import net.vrallev.android.task.TaskExecutor;
 import java.util.concurrent.Executors;
 
 /**
- * @author rwondratschek
+ * 基本任务
  */
 public abstract class BaseTask<RESULT> extends Task<RESULT> {
 

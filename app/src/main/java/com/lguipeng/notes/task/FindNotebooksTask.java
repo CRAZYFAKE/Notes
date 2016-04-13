@@ -3,12 +3,11 @@ package com.lguipeng.notes.task;
 import com.evernote.client.android.EvernoteSession;
 import com.evernote.client.android.asyncclient.EvernoteNoteStoreClient;
 import com.evernote.edam.type.Notebook;
-import com.lguipeng.notes.utils.NotesLog;
 
 import java.util.List;
 
 /**
- * @author rwondratschek
+ * 列出笔记本列表
  */
 public class FindNotebooksTask extends BaseTask<List<Notebook>> {
 
@@ -20,8 +19,6 @@ public class FindNotebooksTask extends BaseTask<List<Notebook>> {
     @Override
     protected List<Notebook> checkedExecute() throws Exception {
         EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance().getEvernoteClientFactory().getNoteStoreClient();
-        NotesLog.i(String.valueOf(noteStoreClient.listNotebooks().size()));
-        System.out.print(noteStoreClient.listNotebooks().size());
         return noteStoreClient.listNotebooks();
     }
 }
