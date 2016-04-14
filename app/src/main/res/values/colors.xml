@@ -58,4 +58,8 @@
     <color name="status_bar_green">#1e7f40</color>
     <color name="nav_header_green">#54C078</color>
 
+    <color name="grey_background_pressed">#ff969696</color>
+    <color name="grey_background_selected">#ffe5e5e5</color>
+    <color name="grey_background">#eeeeee</color>
+
 </resources>

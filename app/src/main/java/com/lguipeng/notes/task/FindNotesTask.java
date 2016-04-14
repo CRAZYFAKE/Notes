@@ -14,7 +14,7 @@ import com.evernote.edam.type.Notebook;
 import java.util.List;
 
 /**
- * 查找笔记内容
+ * 查找笔记
  */
 public class FindNotesTask extends BaseTask<List<NoteRef>> {
 

@@ -3,6 +3,7 @@ package com.lguipeng.notes.mvp.views.impl;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 
+import com.evernote.edam.type.Notebook;
 import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.views.View;
 
@@ -35,6 +36,8 @@ public interface MainView extends View {
     void showDeleteForeverDialog(SNote note);//提示用户是否永久删除笔记
     void showSnackbar(@StringRes int message);//顯示SnackBar
     void showGoBindEverNoteSnackbar(@StringRes int message, @StringRes int action);
+    void initNoteBookList(List<Notebook> list);
+    void getNoteBookList();
     void moveTaskToBack();
     void reCreate();
 }

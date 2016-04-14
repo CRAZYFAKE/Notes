@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.evernote.edam.type.Notebook;
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.injector.ContextLifeCycle;
 import com.lguipeng.notes.model.SNote;
@@ -52,6 +53,7 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
     private boolean isCardItemLayout = true;
     private boolean isRightHandMode = false;
     private final String CURRENT_NOTE_TYPE_KEY = "CURRENT_NOTE_TYPE_KEY";
+    private List<Notebook> notebookList;
 
     @Inject
     public MainPresenter(@ContextLifeCycle("Activity") Context context, FinalDb finalDb, PreferenceUtils preferenceUtils,
@@ -185,32 +187,29 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
 
     /**
      * 左側侧边栏列表点击事件
+     *
      * @param position 第一个位置为0
      */
     public void onDrawerItemSelect(int position) {
-//        mCurrentNoteTypePage = SNote.NoteType.mapValueToStatus(position);
-//        switchNoteTypePage(mCurrentNoteTypePage);
-//        view.setDrawerItemChecked(position);
-//        switch (mCurrentNoteTypePage) {
-//            case LIST:
-//                break;
-//            case TRASH:
-//                view.showFab(false);
-//                view.enableSwipeRefreshLayout(false);
-//                break;
-//            default:
-//                view.showFab(true);
-//                view.enableSwipeRefreshLayout(true);
-//                break;
-//        }
-        switch (position){
-            case 0:
+        mCurrentNoteTypePage = SNote.NoteType.mapValueToStatus(position);
+        switchNoteTypePage(mCurrentNoteTypePage);
+        view.setDrawerItemChecked(position);
+        switch (mCurrentNoteTypePage) {
+            case LIST:
+                view.getNoteBookList();
+                view.showFab(false);
+                view.enableSwipeRefreshLayout(true);
+                view.showProgressWheel(false);
                 break;
-            case 1:
-                break;
-            case 2:
+            case TRASH:
+                initRecyclerView();
+                view.showFab(false);
+                view.enableSwipeRefreshLayout(false);
                 break;
             default:
+                initRecyclerView();
+                view.showFab(true);
+                view.enableSwipeRefreshLayout(true);
                 break;
         }
     }

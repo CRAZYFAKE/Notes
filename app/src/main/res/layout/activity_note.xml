@@ -34,7 +34,7 @@
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/label_edit_text"
                     style="@style/EditTextTheme"
-                    android:textSize="@dimen/abc_text_size_large_material"
+                    android:textSize="@dimen/text_normal"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelAlwaysShown="true"
                     app:met_floatingLabelText="@string/title"
@@ -44,6 +44,7 @@
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/content_edit_text"
                     style="@style/EditTextTheme"
+                    android:textSize="@dimen/text_small"
                     android:lineSpacingExtra="4dp"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelAlwaysShown="true"

@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,9 +25,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.evernote.edam.type.Notebook;
 import com.lguipeng.notes.App;
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.adpater.DrawerListAdapter;
+import com.lguipeng.notes.adpater.NoteBooksAdapter;
 import com.lguipeng.notes.adpater.NotesAdapter;
 import com.lguipeng.notes.adpater.SimpleListAdapter;
 import com.lguipeng.notes.adpater.base.BaseRecyclerViewAdapter;
@@ -35,11 +38,14 @@ import com.lguipeng.notes.injector.module.ActivityModule;
 import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.impl.MainPresenter;
 import com.lguipeng.notes.mvp.views.impl.MainView;
+import com.lguipeng.notes.task.FindNotebooksTask;
 import com.lguipeng.notes.utils.DialogUtils;
 import com.lguipeng.notes.utils.SnackbarUtils;
 import com.lguipeng.notes.utils.ToolbarUtils;
 import com.lguipeng.notes.view.BetterFab;
 import com.pnikosis.materialishprogress.ProgressWheel;
+
+import net.vrallev.android.task.TaskResult;
 
 import java.util.List;
 
@@ -53,8 +59,8 @@ public class MainActivity extends BaseActivity implements MainView {
     Toolbar toolbar;
     @Bind(R.id.refresher)
     SwipeRefreshLayout refreshLayout;
-    @Bind(R.id.recyclerView)
-    RecyclerView recyclerView;
+    @Bind(R.id.noteView)
+    RecyclerView mNoteView;//笔记view
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.left_drawer_listview)
@@ -70,7 +76,8 @@ public class MainActivity extends BaseActivity implements MainView {
     @Inject
     MainPresenter mainPresenter;
     private ActionBarDrawerToggle mDrawerToggle;
-    private NotesAdapter recyclerAdapter;
+    private NotesAdapter mNotesAdapter;
+    private NoteBooksAdapter mNoteBooksAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,9 +170,9 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void initRecyclerView(List<SNote> notes) {
-        recyclerAdapter = new NotesAdapter(notes, this);
-        recyclerView.setHasFixedSize(true);
-        recyclerAdapter.setOnInViewClickListener(R.id.notes_item_root,
+        mNotesAdapter = new NotesAdapter(notes, this);
+        mNoteView.setHasFixedSize(true);
+        mNotesAdapter.setOnInViewClickListener(R.id.notes_item_root,
                 new BaseRecyclerViewAdapter.onInternalClickListenerImpl<SNote>() {
                     @Override
                     public void OnClickListener(View parentV, View v, Integer position, SNote values) {
@@ -173,7 +180,7 @@ public class MainActivity extends BaseActivity implements MainView {
                         mainPresenter.onRecyclerViewItemClick(position, values);
                     }
                 });
-        recyclerAdapter.setOnInViewClickListener(R.id.note_more,
+        mNotesAdapter.setOnInViewClickListener(R.id.note_more,
                 new BaseRecyclerViewAdapter.onInternalClickListenerImpl<SNote>() {
                     @Override
                     public void OnClickListener(View parentV, View v, Integer position, SNote values) {
@@ -181,11 +188,41 @@ public class MainActivity extends BaseActivity implements MainView {
                         mainPresenter.showPopMenu(v, position, values);
                     }
                 });
-        recyclerAdapter.setFirstOnly(false);
-        recyclerAdapter.setDuration(300);
-        recyclerView.setAdapter(recyclerAdapter);
+        mNotesAdapter.setFirstOnly(false);
+        mNotesAdapter.setDuration(300);
+        mNoteView.setAdapter(mNotesAdapter);
         refreshLayout.setColorSchemeColors(getColorPrimary());
         refreshLayout.setOnRefreshListener(mainPresenter);
+    }
+
+    @TaskResult(id = "personal")
+    @Override
+    public void initNoteBookList(List<Notebook> list) {
+        mNoteBooksAdapter = new NoteBooksAdapter(list, this);
+        mNoteView.setHasFixedSize(true);
+        mNoteBooksAdapter.setOnInViewClickListener(R.id.notebooks_item_root,
+                new BaseRecyclerViewAdapter.onInternalClickListenerImpl<Notebook>() {
+                    @Override
+                    public void OnClickListener(View parentV, View v, Integer position, Notebook values) {
+                        super.OnClickListener(parentV, v, position, values);
+                        Intent intent = new Intent();
+                        Bundle args = new Bundle();
+                        args.putSerializable(NotesActivity.KEY_NOTEBOOK, list.get(position));
+                        intent.putExtras(args);
+                        intent.setClass(MainActivity.this, NotesActivity.class);
+                        startActivity(intent);
+                    }
+                });
+        mNoteBooksAdapter.setFirstOnly(false);
+        mNoteBooksAdapter.setDuration(300);
+        mNoteView.setAdapter(mNoteBooksAdapter);
+        refreshLayout.setColorSchemeColors(getColorPrimary());
+        refreshLayout.setOnRefreshListener(mainPresenter);
+    }
+
+    @Override
+    public void getNoteBookList() {
+        new FindNotebooksTask().start(this, "personal");
     }
 
     @Override
@@ -195,28 +232,28 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void switchNoteTypePage(List<SNote> notes) {
-        recyclerAdapter.setList(notes);
-        recyclerAdapter.notifyDataSetChanged();
+        mNotesAdapter.setList(notes);
+        mNotesAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void addNote(SNote note) {
-        recyclerAdapter.add(note);
+        mNotesAdapter.add(note);
     }
 
     @Override
     public void updateNote(SNote note) {
-        recyclerAdapter.update(note);
+        mNotesAdapter.update(note);
     }
 
     @Override
     public void removeNote(SNote note) {
-        recyclerAdapter.remove(note);
+        mNotesAdapter.remove(note);
     }
 
     @Override
     public void scrollRecyclerViewToTop() {
-        recyclerView.smoothScrollToPosition(0);
+        mNoteView.smoothScrollToPosition(0);
     }
 
     @Override
@@ -294,7 +331,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void setLayoutManager(RecyclerView.LayoutManager manager) {
-        recyclerView.setLayoutManager(manager);
+        mNoteView.setLayoutManager(manager);
     }
 
     @Override
@@ -378,9 +415,10 @@ public class MainActivity extends BaseActivity implements MainView {
             public boolean onQueryTextSubmit(String s) {
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
-                recyclerAdapter.getFilter().filter(s);
+                mNotesAdapter.getFilter().filter(s);
                 return true;
             }
         });

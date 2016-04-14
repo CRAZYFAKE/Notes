@@ -25,10 +25,11 @@
                 android:layout_height="match_parent">
 
                 <com.lguipeng.notes.view.FixedRecyclerView
-                    android:id="@+id/recyclerView"
+                    android:id="@+id/noteView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="4dp" />
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:visibility="visible" />
             </android.support.v4.widget.SwipeRefreshLayout>
 
             <com.pnikosis.materialishprogress.ProgressWheel
@@ -63,16 +64,15 @@
             android:background="?attr/colorPrimary"
             android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/user_head"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:id="@+id/user_head"
-                android:layout_marginTop="15dp"
                 android:layout_gravity="center"
-                app:civ_border_width="1dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_attach"
                 app:civ_border_color="#FFFFFF"
-                android:src="@mipmap/icon"/>
+                app:civ_border_width="1dp" />
 
             <ListView
                 android:id="@+id/left_drawer_listview"
