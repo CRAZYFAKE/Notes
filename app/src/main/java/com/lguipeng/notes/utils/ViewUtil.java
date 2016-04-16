@@ -28,7 +28,7 @@ public final class ViewUtil {
     }
 
     public static void showSnackbar(View view, CharSequence text, int length) {
-        CoordinatorLayout coordinatorLayout = findFabCoordinator(view, R.id.coordinatorLayout);
+        CoordinatorLayout coordinatorLayout = findFabCoordinator(view, R.id.drawer_layout);
         if (coordinatorLayout != null) {
             view = coordinatorLayout;
         }

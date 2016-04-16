@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.lguipeng.notes.App;
@@ -38,6 +39,8 @@ public class NoteActivity extends BaseActivity implements NoteView {
     MaterialEditText contentEditText;
     @Bind(R.id.opr_time_line_text)
     TextView oprTimeLineTextView;
+    @Bind(R.id.frame_layout)
+    FrameLayout mFramLayout;
     @Inject
     NotePresenter notePresenter;
     //添加附件按钮
@@ -229,17 +232,17 @@ public class NoteActivity extends BaseActivity implements NoteView {
 
     @OnClick(R.id.fb_attach_image)
     public void onClick() {
-        Snackbar.make(attachImage, "添加图片", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mFramLayout, "添加图片", Snackbar.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fb_attach_audio)
     public void onClick1() {
-        Snackbar.make(attachAudio, "添加音频", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mFramLayout, "添加音频", Snackbar.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fb_attach_file)
     public void onClick2() {
-        Snackbar.make(attachFile, "添加图片", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mFramLayout, "添加图片", Snackbar.LENGTH_SHORT).show();
     }
 
 }

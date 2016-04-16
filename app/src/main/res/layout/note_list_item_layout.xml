@@ -16,7 +16,7 @@
         app:cardElevation="4dp">
 
         <TextView
-            android:id="@+id/note_title"
+            android:id="@+id/note_label_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"

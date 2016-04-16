@@ -7,7 +7,7 @@ import com.lguipeng.notes.mvp.views.View;
 
 public interface SettingView extends View {
     void findPreference();
-    void setRightHandModePreferenceChecked(boolean checked);
+//    void setRightHandModePreferenceChecked(boolean checked);
     void setCardLayoutPreferenceChecked(boolean checked);
     void setFeedbackPreferenceSummary(CharSequence c);
     void setFeedbackPreferenceClickListener(Preference.OnPreferenceClickListener l);

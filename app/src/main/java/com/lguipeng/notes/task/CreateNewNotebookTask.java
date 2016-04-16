@@ -19,7 +19,6 @@ public class CreateNewNotebookTask extends BaseTask<Notebook> {
     @Override
     protected Notebook checkedExecute() throws Exception {
         EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance().getEvernoteClientFactory().getNoteStoreClient();
-
         Notebook notebook = new Notebook();
         notebook.setName(mName);
         return noteStoreClient.createNotebook(notebook);

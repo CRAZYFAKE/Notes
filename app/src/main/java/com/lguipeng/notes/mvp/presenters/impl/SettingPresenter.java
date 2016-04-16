@@ -181,7 +181,7 @@ public class SettingPresenter implements Presenter, DialogInterface.OnClickListe
         isRightHandMode = mPreferenceUtils.getBooleanParam(getString(mContext,
                 R.string.right_hand_mode_key));
         view.setCardLayoutPreferenceChecked(isCardLayout);
-        view.setRightHandModePreferenceChecked(isRightHandMode);
+//        view.setRightHandModePreferenceChecked(isRightHandMode);
     }
 
     private void onGetUserSuccess(String user) {

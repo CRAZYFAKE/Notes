@@ -18,14 +18,19 @@ import com.lguipeng.notes.R;
 import com.lguipeng.notes.utils.ToolbarUtils;
 import com.squareup.okhttp.Response;
 
+import net.vrallev.android.task.TaskResult;
+
 import java.io.IOException;
 
 import butterknife.Bind;
 
+/**
+ * 浏览在线笔记，以HTML形式
+ */
 public class ViewHTMLActivity extends BaseActivity {
 
-    private static final String KEY_NOTE = "KEY_NOTE";
-    private static final String KEY_HTML = "KEY_HTML";
+    public static final String KEY_NOTE = "KEY_NOTE";
+    public static final String KEY_HTML = "KEY_HTML";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -37,8 +42,10 @@ public class ViewHTMLActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNoteRef = getIntent().getParcelableExtra(KEY_NOTE);
-        mHtml = getIntent().getStringExtra(KEY_HTML);
+        mNoteRef = (NoteRef) getIntent().getExtras().getParcelable(KEY_NOTE);
+        mHtml = getIntent().getExtras().getString(KEY_HTML);
+
+        toolbar.setTitle(mNoteRef.getTitle());
 
         final WebView webView = (WebView) findViewById(R.id.web_view);
 
@@ -75,6 +82,11 @@ public class ViewHTMLActivity extends BaseActivity {
     @Override
     public void initToolbar() {
         ToolbarUtils.initToolbar(toolbar, this);
+    }
+
+    @TaskResult(id = "html")
+    private void getNoteHtml(String html) {
+        mHtml = html;
     }
 
     @Override

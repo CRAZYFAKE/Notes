@@ -85,7 +85,7 @@ public abstract class BaseTask<RESULT> extends Task<RESULT> {
                             @Override
                             public void run() {
                                 View view = activity.findViewById(android.R.id.content);
-                                CoordinatorLayout fabCoordinator = ViewUtil.findFabCoordinator(view, R.id.coordinatorLayout);
+                                CoordinatorLayout fabCoordinator = ViewUtil.findFabCoordinator(view, R.id.drawer_layout);
                                 if (fabCoordinator != null) {
                                     view = fabCoordinator;
                                 }

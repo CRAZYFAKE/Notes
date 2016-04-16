@@ -171,7 +171,6 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
             for (Animator anim : getAnimators(holder.itemView)) {
                 anim.setDuration(mDuration).start();
                 anim.setInterpolator(mInterpolator);
-
             }
             mLastPosition = position;
         } else {

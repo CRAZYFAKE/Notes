@@ -4,10 +4,10 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,6 +38,7 @@ import com.lguipeng.notes.injector.module.ActivityModule;
 import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.impl.MainPresenter;
 import com.lguipeng.notes.mvp.views.impl.MainView;
+import com.lguipeng.notes.task.CreateNewNotebookTask;
 import com.lguipeng.notes.task.FindNotebooksTask;
 import com.lguipeng.notes.utils.DialogUtils;
 import com.lguipeng.notes.utils.SnackbarUtils;
@@ -68,11 +69,14 @@ public class MainActivity extends BaseActivity implements MainView {
     @Bind(R.id.left_drawer)
     View drawerRootView;
     @Bind(R.id.fab)
-    BetterFab fab;
+    BetterFab addNote;
+    @Bind(R.id.add_notebook)
+    BetterFab addNotebook;
     @Bind(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
     @Bind(R.id.progress_wheel)
     ProgressWheel progressWheel;
+
     @Inject
     MainPresenter mainPresenter;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -83,6 +87,8 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         launchWithNoAnim();
         super.onCreate(savedInstanceState);
+        showAddNoteFab(true);
+        showAddNoteBookFab(false);
         initializePresenter();
         mainPresenter.onCreate(savedInstanceState);
     }
@@ -205,12 +211,7 @@ public class MainActivity extends BaseActivity implements MainView {
                     @Override
                     public void OnClickListener(View parentV, View v, Integer position, Notebook values) {
                         super.OnClickListener(parentV, v, position, values);
-                        Intent intent = new Intent();
-                        Bundle args = new Bundle();
-                        args.putSerializable(NotesActivity.KEY_NOTEBOOK, list.get(position));
-                        intent.putExtras(args);
-                        intent.setClass(MainActivity.this, NotesActivity.class);
-                        startActivity(intent);
+                        mainPresenter.startNotesActivity(list.get(position));
                     }
                 });
         mNoteBooksAdapter.setFirstOnly(false);
@@ -218,11 +219,23 @@ public class MainActivity extends BaseActivity implements MainView {
         mNoteView.setAdapter(mNoteBooksAdapter);
         refreshLayout.setColorSchemeColors(getColorPrimary());
         refreshLayout.setOnRefreshListener(mainPresenter);
+        showProgressWheel(false);
     }
 
     @Override
     public void getNoteBookList() {
         new FindNotebooksTask().start(this, "personal");
+    }
+
+    @TaskResult
+    @Override
+    public void onCreateNoteBook(Notebook notebook) {
+        if (notebook != null) {
+            getNoteBookList();
+        } else {
+            showProgressWheel(false);
+            Snackbar.make(refreshLayout, "创建笔记本失败", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -289,9 +302,24 @@ public class MainActivity extends BaseActivity implements MainView {
         drawerRootView.setLayoutParams(params);
     }
 
+    /**
+     * 显示添加笔记的Fab按钮
+     *
+     * @param visible
+     */
     @Override
-    public void showFab(boolean visible) {
-        fab.setForceHide(!visible);
+    public void showAddNoteFab(boolean visible) {
+        addNote.setForceHide(!visible);
+    }
+
+    /**
+     * 显示添加笔记本的Fab按钮
+     *
+     * @param visible
+     */
+    @Override
+    public void showAddNoteBookFab(boolean visible) {
+        addNotebook.setForceHide(!visible);
     }
 
     @Override
@@ -364,12 +392,12 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void showSnackbar(int message) {
-        SnackbarUtils.show(fab, message);
+        SnackbarUtils.show(addNote, message);
     }
 
     @Override
     public void showGoBindEverNoteSnackbar(int message, int action) {
-        SnackbarUtils.showAction(fab, message
+        SnackbarUtils.showAction(addNote, message
                 , action, mainPresenter);
     }
 
@@ -450,6 +478,16 @@ public class MainActivity extends BaseActivity implements MainView {
     @OnClick(R.id.fab)
     public void newNote(View view) {
         mainPresenter.newNote();
+    }
+
+    @OnClick(R.id.add_notebook)
+    public void newNoteBook(View view) {
+        mainPresenter.newNoteBook();
+    }
+
+    @Override
+    public void createNoteBook(String title) {
+        new CreateNewNotebookTask(title).start(this);
     }
 
     @Override

@@ -2,17 +2,22 @@ package com.lguipeng.notes.mvp.presenters.impl;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.evernote.edam.type.Notebook;
 import com.lguipeng.notes.R;
@@ -23,7 +28,9 @@ import com.lguipeng.notes.mvp.views.View;
 import com.lguipeng.notes.mvp.views.impl.MainView;
 import com.lguipeng.notes.ui.AboutActivity;
 import com.lguipeng.notes.ui.NoteActivity;
+import com.lguipeng.notes.ui.NotesActivity;
 import com.lguipeng.notes.ui.SettingActivity;
+import com.lguipeng.notes.utils.DialogUtils;
 import com.lguipeng.notes.utils.EverNoteUtils;
 import com.lguipeng.notes.utils.NotesLog;
 import com.lguipeng.notes.utils.ObservableUtils;
@@ -41,7 +48,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class MainPresenter implements Presenter, android.view.View.OnClickListener, SwipeRefreshLayout.OnRefreshListener,
-        PopupMenu.OnMenuItemClickListener, MenuItemCompat.OnActionExpandListener {
+        PopupMenu.OnMenuItemClickListener, MenuItemCompat.OnActionExpandListener, DialogInterface.OnClickListener {
     private MainView view;
     private final Context mContext;
     private FinalDb mFinalDb;
@@ -54,6 +61,7 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
     private boolean isRightHandMode = false;
     private final String CURRENT_NOTE_TYPE_KEY = "CURRENT_NOTE_TYPE_KEY";
     private List<Notebook> notebookList;
+    private TextInputLayout mTitleView;
 
     @Inject
     public MainPresenter(@ContextLifeCycle("Activity") Context context, FinalDb finalDb, PreferenceUtils preferenceUtils,
@@ -197,18 +205,21 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         switch (mCurrentNoteTypePage) {
             case LIST:
                 view.getNoteBookList();
-                view.showFab(false);
-                view.enableSwipeRefreshLayout(true);
+                view.showAddNoteBookFab(true);
+                view.showAddNoteFab(false);
+                view.enableSwipeRefreshLayout(false);
                 view.showProgressWheel(false);
                 break;
             case TRASH:
                 initRecyclerView();
-                view.showFab(false);
+                view.showAddNoteFab(false);
+                view.showAddNoteBookFab(false);
                 view.enableSwipeRefreshLayout(false);
                 break;
             default:
                 initRecyclerView();
-                view.showFab(true);
+                view.showAddNoteFab(true);
+                view.showAddNoteBookFab(false);
                 view.enableSwipeRefreshLayout(true);
                 break;
         }
@@ -216,14 +227,14 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
 
     private boolean onMenuItemActionExpand() {
         view.enableSwipeRefreshLayout(false);
-        view.showFab(false);
+        view.showAddNoteFab(false);
         return true;
     }
 
     private boolean onMenuItemActionCollapse() {
         if (mCurrentNoteTypePage != SNote.NoteType.TRASH) {
             view.enableSwipeRefreshLayout(true);
-            view.showFab(true);
+            view.showAddNoteFab(true);
         }
         return true;
     }
@@ -319,6 +330,15 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         mContext.startActivity(intent);
     }
 
+    public void startNotesActivity(Notebook notebook) {
+        Intent intent = new Intent();
+        Bundle args = new Bundle();
+        args.putSerializable(NotesActivity.KEY_NOTEBOOK, notebook);
+        intent.putExtras(args);
+        intent.setClass(mContext, NotesActivity.class);
+        mContext.startActivity(intent);
+    }
+
     public void onRecyclerViewItemClick(int position, SNote value) {
         if (mCurrentNoteTypePage == SNote.NoteType.TRASH) {
             return;
@@ -390,6 +410,49 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         SNote note = new SNote();
         note.setType(mCurrentNoteTypePage);
         startNoteActivity(NotePresenter.CREATE_NOTE_MODE, note);
+    }
+
+    /**
+     * 创建新笔记本
+     */
+    public void newNoteBook() {
+        android.view.View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_create_notebook, null);
+        mTitleView = (TextInputLayout) view.findViewById(R.id.book_name);
+        mTitleView.setHint(mContext.getString(R.string.note_bookname));
+        AlertDialog.Builder builder = DialogUtils.makeDialogBuilder(mContext);
+        builder.setTitle(R.string.new_notebook);
+        builder.setView(view);
+        builder.setPositiveButton(R.string.sure, MainPresenter.this);
+        builder.setNegativeButton(R.string.cancel, MainPresenter.this);
+        builder.show();
+    }
+
+    /**
+     * 创建笔记本Dialog点击事件
+     *
+     * @param dialog
+     * @param which
+     */
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        switch (which) {
+            //确定
+            case DialogInterface.BUTTON_POSITIVE:
+                view.showProgressWheel(true);
+                view.createNoteBook(mTitleView.getEditText().getText().toString());
+                hideKeyBord();
+                break;
+            //取消
+            case DialogInterface.BUTTON_NEGATIVE:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void hideKeyBord() {
+        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private void pushNote(SNote note) {

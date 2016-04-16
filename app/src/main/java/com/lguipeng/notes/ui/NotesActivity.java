@@ -1,23 +1,24 @@
 package com.lguipeng.notes.ui;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.evernote.client.android.type.NoteRef;
 import com.evernote.edam.type.LinkedNotebook;
 import com.evernote.edam.type.Notebook;
 import com.lguipeng.notes.R;
+import com.lguipeng.notes.adpater.NoteListAdapter;
+import com.lguipeng.notes.adpater.base.BaseRecyclerViewAdapter;
 import com.lguipeng.notes.task.FindNotesTask;
+import com.lguipeng.notes.task.GetNoteHtmlTask;
 import com.lguipeng.notes.utils.ToolbarUtils;
+import com.lguipeng.notes.view.FixedRecyclerView;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import net.vrallev.android.task.TaskResult;
@@ -36,7 +37,7 @@ public class NotesActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.notes_view)
-    RecyclerView mNotesView;
+    FixedRecyclerView mNotesView;
     @Bind(R.id.empty_notes)
     TextView emptyText;
     @Bind(R.id.progress_bar)
@@ -44,6 +45,7 @@ public class NotesActivity extends BaseActivity {
     @Bind(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
 
+    private NoteRef mCurNote;
     private String mQurry;
     private Notebook mNotebook;
     private LinkedNotebook mLinkedNotebook;
@@ -78,16 +80,32 @@ public class NotesActivity extends BaseActivity {
         } else {
             showNotesView();
             mNoteListAdapter = new NoteListAdapter(list, this);
+            mNotesView.setHasFixedSize(true);
+            mNoteListAdapter.setOnInViewClickListener(R.id.note_list_item_root,
+                    new BaseRecyclerViewAdapter.onInternalClickListenerImpl<NoteRef>() {
+                        @Override
+                        public void OnClickListener(View parentV, View v, Integer position, NoteRef values) {
+                            super.OnClickListener(parentV, v, position, values);
+                            new GetNoteHtmlTask(list.get(position)).start(NotesActivity.this, "html");
+                            mCurNote = list.get(position);
+                        }
+                    });
+            mNoteListAdapter.setFirstOnly(false);
+            mNoteListAdapter.setDuration(300);
             mNotesView.setAdapter(mNoteListAdapter);
-            refreshLayout.setColorSchemeColors(getColorPrimary());
+            enableSwipeRefreshLayout(false);
             showProgressWheel(false);
         }
-
     }
 
     @Override
     public void initToolbar() {
         ToolbarUtils.initToolbar(toolbar, this);
+    }
+
+    private void fixRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(NotesActivity.this);
+        mNotesView.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -98,9 +116,15 @@ public class NotesActivity extends BaseActivity {
         }
     }
 
-    private void fixRecyclerView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(NotesActivity.this);
-        mNotesView.setLayoutManager(layoutManager);
+    @TaskResult(id = "html")
+    public void gotoViewHtml(String html, GetNoteHtmlTask task) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ViewHTMLActivity.KEY_NOTE, mCurNote);
+        bundle.putString(ViewHTMLActivity.KEY_HTML, html);
+        intent.putExtras(bundle);
+        intent.setClass(NotesActivity.this, ViewHTMLActivity.class);
+        startActivity(intent);
     }
 
     public void showProgressWheel(boolean visible) {
@@ -115,6 +139,10 @@ public class NotesActivity extends BaseActivity {
                 }
             }, 300);
         }
+    }
+
+    public void enableSwipeRefreshLayout(boolean enable) {
+        refreshLayout.setEnabled(enable);
     }
 
     /**
@@ -133,77 +161,4 @@ public class NotesActivity extends BaseActivity {
         refreshLayout.setVisibility(View.VISIBLE);
     }
 
-    public interface ItemClickListener {
-        public void onItemClick(View view);
-    }
-    public interface ItemLongClickListener {
-        public void onItemLongClick(View view);
-    }
-
-    class NoteListAdapter<E> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener,View.OnLongClickListener {
-
-        List<NoteRef> mList;
-        Context mContext;
-
-        private ItemClickListener mItemClickListener = null;
-        private ItemLongClickListener mItemLongClickListener = null;
-
-        public NoteListAdapter(List<NoteRef> list, Context context) {
-            this.mList = list;
-            this.mContext = context;
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            MyViewHolder viewHolder = (MyViewHolder) holder;
-            viewHolder.position = position;
-            NoteRef noteRef = mList.get(position);
-            viewHolder.tv_title.setText(noteRef.getTitle());
-        }
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_list_item_layout, null);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            view.setLayoutParams(lp);
-            view.setOnClickListener(this);
-            view.setOnLongClickListener(this);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mItemClickListener != null){
-
-            }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            return false;
-        }
-
-        public void setOnItemClickListener(ItemClickListener listener){
-            this.mItemClickListener = listener;
-        }
-        public void setOnLongItemClickListener(ItemLongClickListener listener){
-            this.mItemLongClickListener = listener;
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder{
-
-            public TextView tv_title;
-            public int position;
-
-            public MyViewHolder(View rootView) {
-                super(rootView);
-                tv_title = (TextView) itemView.findViewById(R.id.note_title);
-            }
-        }
-    }
 }

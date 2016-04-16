@@ -24,7 +24,8 @@ public interface MainView extends View {
     void closeDrawer();
     void openOrCloseDrawer();
     void setMenuGravity(int gravity);
-    void showFab(boolean visible);
+    void showAddNoteFab(boolean visible);
+    void showAddNoteBookFab(boolean visible);
     void stopRefresh();
     void startRefresh();
     boolean isRefreshing();
@@ -38,6 +39,8 @@ public interface MainView extends View {
     void showGoBindEverNoteSnackbar(@StringRes int message, @StringRes int action);
     void initNoteBookList(List<Notebook> list);
     void getNoteBookList();
+    void createNoteBook(String title);
+    void onCreateNoteBook(Notebook notebook);
     void moveTaskToBack();
     void reCreate();
 }
