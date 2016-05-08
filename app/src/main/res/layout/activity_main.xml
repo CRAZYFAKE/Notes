@@ -103,6 +103,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:src="@drawable/ic_attach"
+                android:visibility="gone"
                 app:civ_border_color="#FFFFFF"
                 app:civ_border_width="1dp" />
 

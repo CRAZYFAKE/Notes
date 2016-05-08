@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected Context mContext;
 
@@ -28,6 +28,7 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
 
     protected List<E> list;
     private Map<Integer, onInternalClickListener<E>> canClickItem;
+
     public BaseRecyclerViewAdapter(List<E> list) {
         this(list, null);
     }
@@ -42,23 +43,23 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
         notifyItemInserted(0);
     }
 
-    public void update(E e, int fromPosition, int toPosition){
+    public void update(E e, int fromPosition, int toPosition) {
         this.list.remove(fromPosition);
         this.list.add(toPosition, e);
-        if (fromPosition == toPosition){
+        if (fromPosition == toPosition) {
             notifyItemChanged(fromPosition);
-        }else {
+        } else {
             notifyItemRemoved(fromPosition);
             notifyItemInserted(toPosition);
         }
         //notifyItemRangeChanged(fromPosition, toPosition);
     }
 
-    public void update(E e, int fromPosition){
+    public void update(E e, int fromPosition) {
         update(e, fromPosition, 0);
     }
 
-    public void update(E e){
+    public void update(E e) {
         int fromPosition = this.list.indexOf(e);
         update(e, fromPosition);
     }
@@ -95,7 +96,7 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder != null){
+        if (holder != null) {
             addInternalClickListener(holder.itemView, position, list.get(position));
         }
     }
@@ -112,8 +113,8 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
                 final onInternalClickListener<E> listener = canClickItem.get(key);
                 if (inView != null && listener != null) {
                     inView.setOnClickListener((view) ->
-                            listener.OnClickListener(itemV, view, position,
-                                    valuesMap)
+                                    listener.OnClickListener(itemV, view, position,
+                                            valuesMap)
                     );
                     inView.setOnLongClickListener((view) -> {
                         listener.OnLongClickListener(itemV, view, position,
@@ -133,12 +134,13 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
 
     public interface onInternalClickListener<T> {
         void OnClickListener(View parentV, View v, Integer position,
-                                    T values);
+                             T values);
+
         void OnLongClickListener(View parentV, View v, Integer position,
-                                        T values);
+                                 T values);
     }
 
-    public static class onInternalClickListenerImpl<T> implements onInternalClickListener<T>{
+    public static class onInternalClickListenerImpl<T> implements onInternalClickListener<T> {
         @Override
         public void OnClickListener(View parentV, View v, Integer position, T values) {
 
@@ -166,7 +168,7 @@ public abstract class BaseRecyclerViewAdapter<E> extends RecyclerView.Adapter<Re
         isFirstOnly = firstOnly;
     }
 
-    protected void animate(RecyclerView.ViewHolder holder, int position){
+    protected void animate(RecyclerView.ViewHolder holder, int position) {
         if (!isFirstOnly || position > mLastPosition) {
             for (Animator anim : getAnimators(holder.itemView)) {
                 anim.setDuration(mDuration).start();

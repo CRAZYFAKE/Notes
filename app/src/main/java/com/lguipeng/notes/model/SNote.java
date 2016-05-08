@@ -112,6 +112,7 @@ public class SNote implements Serializable {
 
     /**
      * 新建笔记是否同步
+     *
      * @return
      */
     public boolean hasReadyNewPush() {
@@ -125,6 +126,7 @@ public class SNote implements Serializable {
 
     /**
      * 更新笔记是否同步
+     *
      * @return
      */
     public boolean hasReadyUpdatePush() {
@@ -138,6 +140,7 @@ public class SNote implements Serializable {
 
     /**
      * 将本地笔记转化为能够同步的笔记格式
+     *
      * @return
      */
     public Note parseToNote() {
@@ -149,6 +152,7 @@ public class SNote implements Serializable {
 
     /**
      * 获取笔记的属性，创建时间，GUI等
+     *
      * @param note
      */
     public void parseFromNote(Note note) {
@@ -162,6 +166,7 @@ public class SNote implements Serializable {
 
     /**
      * 将本地笔记转化为HTML格式笔记
+     *
      * @return
      */
     private String convertContentToEvernote() {
@@ -170,13 +175,14 @@ public class SNote implements Serializable {
                 replace("<", "&lt;").
                 replace(">", "&gt;").
                 replace("\n", "<br/>")
-    + EvernoteUtil.NOTE_SUFFIX;
-    NotesLog.d(evernoteContent);
-    return evernoteContent;
-}
+                + EvernoteUtil.NOTE_SUFFIX;
+        NotesLog.d(evernoteContent);
+        return evernoteContent;
+    }
 
     /**
      * 将HTML形式内容的转化为String
+     *
      * @param content HTML笔记内容
      * @return
      */
@@ -204,7 +210,7 @@ public class SNote implements Serializable {
     public enum Status {
         NEED_PUSH(0x00),//需要同步的
         NEED_REMOVE(0x01),//需要同步删除的
-        IDLE(0x02);//空闲的笔记
+        IDLE(0x02);//空闲的笔记，等待被同步
         private int mValue;
 
         Status(int value) {
@@ -255,6 +261,7 @@ public class SNote implements Serializable {
 
         /**
          * 默认为正常笔记
+         *
          * @return
          */
         public static NoteType getDefault() {
@@ -263,6 +270,7 @@ public class SNote implements Serializable {
 
         /**
          * 获取笔记本类型
+         *
          * @return
          */
         public int getValue() {

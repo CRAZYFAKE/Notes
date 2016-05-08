@@ -354,6 +354,11 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         }
     }
 
+    /**
+     * 删除笔记
+     *
+     * @param note
+     */
     private void moveToTrash(SNote note) {
         if (note == null)
             return;
@@ -364,6 +369,11 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         pushNote(note);
     }
 
+    /**
+     * 恢复笔记
+     *
+     * @param note
+     */
     private void recoverNote(SNote note) {
         if (note == null)
             return;
@@ -374,6 +384,12 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         pushNote(note);
     }
 
+    /**
+     * 删除笔记Dialog
+     *
+     * @param note
+     * @param which
+     */
     public void onDeleteForeverDialogClick(SNote note, int which) {
         if (which == Dialog.BUTTON_POSITIVE) {
             mFinalDb.delete(note);
@@ -455,6 +471,11 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+    /**
+     * 每次新建、更新、删除等操作后，都需要更新这个笔记
+     *
+     * @param note
+     */
     private void pushNote(SNote note) {
         mObservableUtils.pushNote(mEverNoteUtils, note)
                 .subscribeOn(Schedulers.newThread())
@@ -468,6 +489,12 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
                 });
     }
 
+    /**
+     * 同步笔记
+     *
+     * @param type    同步的类型
+     * @param silence
+     */
     private void sync(EverNoteUtils.SyncType type, boolean silence) {
         //mEverNoteUtils.sync();
         mObservableUtils.sync(mEverNoteUtils, type)
@@ -479,6 +506,11 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
                 }));
     }
 
+    /**
+     * 同步时，根据返回信息，提示用户
+     *
+     * @param result
+     */
     public void onEventMainThread(EverNoteUtils.SyncResult result) {
         if (result != EverNoteUtils.SyncResult.START)
             view.stopRefresh();
@@ -518,6 +550,11 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         }
     }
 
+    /**
+     * 根据
+     *
+     * @param event
+     */
     public void onEventMainThread(NotifyEvent event) {
         switch (event.getType()) {
             case NotifyEvent.REFRESH_LIST:

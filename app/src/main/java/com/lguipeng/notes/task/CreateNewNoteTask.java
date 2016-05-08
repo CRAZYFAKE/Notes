@@ -74,9 +74,7 @@ public class CreateNewNoteTask extends BaseTask<Note> {
             resource.setData(data);
             resource.setMime(mImageData.getMimeType());
             resource.setAttributes(attributes);
-
             note.addToResources(resource);
-
             // Set the note's ENML content
             String content = EvernoteUtil.NOTE_PREFIX
                     + mContent
@@ -84,7 +82,6 @@ public class CreateNewNoteTask extends BaseTask<Note> {
                     + EvernoteUtil.NOTE_SUFFIX;
 
             note.setContent(content);
-
             return createNote(note);
 
         } finally {

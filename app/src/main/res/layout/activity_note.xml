@@ -45,8 +45,8 @@
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/content_edit_text"
                     style="@style/EditTextTheme"
-                    android:textSize="@dimen/text_small"
                     android:lineSpacingExtra="4dp"
+                    android:textSize="@dimen/text_small"
                     app:met_floatingLabel="highlight"
                     app:met_floatingLabelAlwaysShown="true"
                     app:met_floatingLabelText="@string/note_content"
@@ -79,11 +79,12 @@
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            fab:fab_rotation="90"
-            fab:fab_bitmap="@drawable/ic_attach"
             app:fab_addButtonColorNormal="?attr/colorPrimary"
             app:fab_addButtonColorPressed="?attr/colorPrimary"
-            fab:fab_labelStyle="@style/menu_labels_style">
+            app:layout_behavior="com.lguipeng.notes.view.behavior.FabBehavior"
+            fab:fab_bitmap="@drawable/ic_attach"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            fab:fab_rotation="90">
 
             <cc.trity.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fb_attach_image"

@@ -174,6 +174,11 @@ public class MainActivity extends BaseActivity implements MainView {
         mDrawerLayout.setScrimColor(getCompactColor(R.color.drawer_scrim_color));
     }
 
+    /**
+     * 初始化本地笔记列表
+     *
+     * @param notes
+     */
     @Override
     public void initRecyclerView(List<SNote> notes) {
         mNotesAdapter = new NotesAdapter(notes, this);
