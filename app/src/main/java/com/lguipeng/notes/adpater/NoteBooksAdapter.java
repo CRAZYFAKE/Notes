@@ -39,7 +39,7 @@ public class NoteBooksAdapter extends BaseRecyclerViewAdapter<Notebook> implemen
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.notebooks_item_layout, parent, false);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_notebooks_layout, parent, false);
         return new NotesItemViewHolder(view);
     }
 

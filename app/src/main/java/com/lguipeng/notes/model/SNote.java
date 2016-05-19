@@ -1,5 +1,7 @@
 package com.lguipeng.notes.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.TextUtils;
 
@@ -144,10 +146,60 @@ public class SNote implements Serializable {
      * @return
      */
     public Note parseToNote() {
+//          修改之前的代码
         Note note = new Note();
         note.setTitle(label);
         note.setContent(convertContentToEvernote());
         return note;
+    }
+
+    public static class ImageData implements Parcelable {
+
+        private final String mPath;
+        private final String mFileName;
+        private final String mMimeType;
+
+        public ImageData(String path, String fileName, String mimeType) {
+            mPath = path;
+            mFileName = fileName;
+            mMimeType = mimeType;
+        }
+
+        public String getPath() {
+            return mPath;
+        }
+
+        public String getFileName() {
+            return mFileName;
+        }
+
+        public String getMimeType() {
+            return mMimeType;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(mPath);
+            dest.writeString(mFileName);
+            dest.writeString(mMimeType);
+        }
+
+        public static final Creator<ImageData> CREATOR = new Creator<ImageData>() {
+            @Override
+            public ImageData createFromParcel(final Parcel source) {
+                return new ImageData(source.readString(), source.readString(), source.readString());
+            }
+
+            @Override
+            public ImageData[] newArray(final int size) {
+                return new ImageData[size];
+            }
+        };
     }
 
     /**
@@ -155,6 +207,7 @@ public class SNote implements Serializable {
      *
      * @param note
      */
+
     public void parseFromNote(Note note) {
         setCreateTime(note.getCreated());
         setGuid(note.getGuid());
@@ -169,7 +222,7 @@ public class SNote implements Serializable {
      *
      * @return
      */
-    private String convertContentToEvernote() {
+    public String convertContentToEvernote() {
         String evernoteContent = EvernoteUtil.NOTE_PREFIX
                 + getContent().
                 replace("<", "&lt;").

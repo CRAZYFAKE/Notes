@@ -205,7 +205,7 @@ public class MainPresenter implements Presenter, android.view.View.OnClickListen
         switch (mCurrentNoteTypePage) {
             case LIST:
                 view.getNoteBookList();
-                view.showAddNoteBookFab(true);
+//                view.showAddNoteBookFab(true);
                 view.showAddNoteFab(false);
                 view.enableSwipeRefreshLayout(false);
                 view.showProgressWheel(false);

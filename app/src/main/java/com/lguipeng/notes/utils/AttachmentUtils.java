@@ -51,8 +51,8 @@ public class AttachmentUtils {
             cursor = mContext.getContentResolver().query(selectedImage, QUERY_COLUMNS, null, null, null);
             if (cursor.moveToFirst()) {
                 path = cursor.getString(cursor.getColumnIndex(QUERY_COLUMNS[1]));
-//                fileName = cursor.getString(cursor.getColumnIndex(QUERY_COLUMNS[3]));
-//                mimeType = cursor.getString(cursor.getColumnIndex(QUERY_COLUMNS[2]));
+                fileName = cursor.getString(cursor.getColumnIndex(QUERY_COLUMNS[3]));
+                mimeType = cursor.getString(cursor.getColumnIndex(QUERY_COLUMNS[2]));
             }
         } catch (Exception e) {
         } finally {
@@ -60,17 +60,16 @@ public class AttachmentUtils {
                 cursor.close();
             }
         }
+
         /* 图片转成SpannableString加到EditText中 */
         File out = new File(Environment.getExternalStorageDirectory()
                 .getPath(), path);
-        Environment.getExternalStorageDirectory()
-                .getAbsolutePath();
         Uri uri = Uri.fromFile(out);
         float scaleWidth = ((float) width) / pic.getWidth();
         Matrix mx = new Matrix();
         mx.setScale(scaleWidth, scaleWidth);
         pic = Bitmap.createBitmap(pic, 0, 0, pic.getWidth(), pic.getHeight(), mx, true);
-        String tempUrl = "<img src='" + uri.getPath() + "'/>";
+        String tempUrl = "<img src='" + path + "'/>";
         SpannableString ss = new SpannableString(tempUrl);
         ImageSpan imgSpan = new ImageSpan(mContext, pic);
         ss.setSpan(imgSpan, 0, tempUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -84,5 +83,4 @@ public class AttachmentUtils {
         }
         edit_text.insert(index + ss.length(), "\n");//光标设置在下一行
     }
-
 }

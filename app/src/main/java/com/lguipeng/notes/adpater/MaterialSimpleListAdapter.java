@@ -13,7 +13,7 @@ import com.lguipeng.notes.model.ShareListItem;
 public class MaterialSimpleListAdapter extends ArrayAdapter<ShareListItem> {
 
     public MaterialSimpleListAdapter(Context context) {
-        super(context, R.layout.md_simplelist_item, android.R.id.title);
+        super(context, R.layout.item_md_simplelist, android.R.id.title);
     }
 
     @Override

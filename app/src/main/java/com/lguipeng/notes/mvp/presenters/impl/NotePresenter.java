@@ -1,6 +1,5 @@
 package com.lguipeng.notes.mvp.presenters.impl;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -25,6 +23,7 @@ import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.Presenter;
 import com.lguipeng.notes.mvp.views.View;
 import com.lguipeng.notes.mvp.views.impl.NoteView;
+import com.lguipeng.notes.ui.AttachmentActivity;
 import com.lguipeng.notes.ui.NoteActivity;
 import com.lguipeng.notes.utils.AttachmentUtils;
 import com.lguipeng.notes.utils.TimeUtils;
@@ -55,11 +54,6 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
     public final static int EDIT_NOTE_MODE = 0x01;
     public final static int CREATE_NOTE_MODE = 0x02;
 
-
-    public final static int REQ_SELECT_IMAGE = 100;
-    public final static int REQ_SELECT_AUDIO = 101;
-    public final static int REQ_SELECT_FILE = 102;
-
     @Inject
     public NotePresenter(@ContextLifeCycle("Activity") Context mContext, FinalDb mFinalDb, AttachmentUtils mAttachmentUtils) {
         this.mContext = mContext;
@@ -86,6 +80,9 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
             case R.id.done:
                 saveNote();
                 return true;
+            case R.id.attachment:
+                startAttachmentActivity(note);
+                return true;
             case android.R.id.home:
                 view.hideKeyBoard();
                 if (view.isDoneMenuItemVisible()) {
@@ -104,41 +101,10 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
         startNoteActivity(NotePresenter.CREATE_NOTE_MODE, note);
     }
 
-    /**
-     * 添加图片
-     *
-     * @param activity
-     */
-    public void attachImage(Activity activity) {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        activity.startActivityForResult(intent, REQ_SELECT_IMAGE);
-    }
-
-    /**
-     * 添加音频
-     *
-     * @param activity
-     */
-    public void attachAudio(Activity activity) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("audio/*");
-        //intent.setType(“audio/*”); //选择音频
-        //intent.setType(“video/*”); //选择视频 （mp4 3gp 是android支持的视频格式）
-        //intent.setType(“video/*;image/*”);//同时选择视频和图片
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        activity.startActivityForResult(intent, REQ_SELECT_FILE);
-    }
-
-    /**
-     * 添加文件
-     *
-     * @param activity
-     */
-    public void attachFile(Activity activity) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        activity.startActivityForResult(intent, REQ_SELECT_FILE);
+    private void startAttachmentActivity(SNote value) {
+        Intent intent = new Intent(mContext, AttachmentActivity.class);
+        intent.putExtra("noteGuid", value.getGuid());
+        mContext.startActivity(intent);
     }
 
     private void startNoteActivity(int type, SNote value) {
@@ -281,14 +247,6 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
                 SpannableString ss = new SpannableString(filepath);
                 ImageSpan imgSpan = new ImageSpan(mContext, pic);
                 ss.setSpan(imgSpan, 0, filepath.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                int index = editText.getSelectionStart();
-//                Editable edit_text = editText.getEditableText();
-//                if (index < 0 || index >= edit_text.length()) {
-//                    edit_text.append(ss);
-//                } else {
-//                    edit_text.insert(index, ss);
-//                }
-//                edit_text.insert(index + ss.length(), "\n");//光标设置在下一行
                 Editable edit_text = editText.getEditableText();
                 edit_text.insert(0, ss);
             } else {

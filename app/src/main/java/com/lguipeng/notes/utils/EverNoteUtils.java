@@ -5,7 +5,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.evernote.client.android.EvernoteSession;
+import com.evernote.client.android.EvernoteUtil;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
+import com.evernote.client.conn.mobile.FileData;
 import com.evernote.edam.error.EDAMErrorCode;
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMUserException;
@@ -17,13 +19,21 @@ import com.evernote.edam.notestore.NotesMetadataResultSpec;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import com.evernote.edam.type.Notebook;
+import com.evernote.edam.type.Resource;
+import com.evernote.edam.type.ResourceAttributes;
 import com.evernote.edam.type.User;
 import com.lguipeng.notes.BuildConfig;
 import com.lguipeng.notes.injector.ContextLifeCycle;
+import com.lguipeng.notes.model.Attachment;
 import com.lguipeng.notes.model.SNote;
 
 import net.tsz.afinal.FinalDb;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +63,7 @@ public class EverNoteUtils {
 
     /**
      * 获取是否登录
+     *
      * @return
      */
     public boolean isLogin() {
@@ -61,6 +72,7 @@ public class EverNoteUtils {
 
     /**
      * 跳转登录页面
+     *
      * @param activity
      */
     public void auth(Activity activity) {
@@ -79,6 +91,7 @@ public class EverNoteUtils {
 
     /**
      * 获取用户
+     *
      * @return 用戶
      * @throws Exception
      */
@@ -108,6 +121,7 @@ public class EverNoteUtils {
 
     /**
      * 获取笔记本是否存在
+     *
      * @param notebookName
      * @throws Exception
      */
@@ -149,6 +163,7 @@ public class EverNoteUtils {
 
     /**
      * 查找笔记本，根据笔记本guid
+     *
      * @param guid
      * @return
      * @throws Exception
@@ -168,6 +183,7 @@ public class EverNoteUtils {
 
     /**
      * 获取所有笔记本
+     *
      * @return
      * @throws Exception
      */
@@ -184,6 +200,7 @@ public class EverNoteUtils {
 
     /**
      * 创建笔记本
+     *
      * @param bookName 笔记本名称
      * @return
      * @throws Exception
@@ -215,6 +232,7 @@ public class EverNoteUtils {
 
     /**
      * 新建笔记
+     *
      * @param sNote 笔记
      * @return
      * @throws Exception
@@ -241,27 +259,77 @@ public class EverNoteUtils {
 
     /**
      * 更新笔记
+     *
      * @param sNote 要更新的笔记
      * @return
      * @throws Exception
      */
     public Note pushUpdateNote(SNote sNote) throws Exception {
-        Note updateNote = sNote.parseToNote();
-        updateNote.setGuid(sNote.getGuid());
-        updateNote.setActive(true);
+        //修改代码之前
+//        Note updateNote = sNote.parseToNote();
+//        updateNote.setGuid(sNote.getGuid());
+//        updateNote.setActive(true);
+//        Note result = mEvernoteSession.getEvernoteClientFactory()
+//                .getNoteStoreClient().updateNote(updateNote);
+//        sNote.setStatus(SNote.Status.IDLE.getValue());
+//        sNote.setLastOprTime(result.getUpdated());
+//        mFinalDb.update(sNote);
+//        return result;
+        List<Attachment> resources = new ArrayList<Attachment>();
+        Note note = new Note();
+        note.setTitle(sNote.getLabel());
+        resources = mFinalDb.findAllByWhere(Attachment.class, "noteGuid=\"" + sNote.getGuid() + "\"");
+        String content = EvernoteUtil.NOTE_PREFIX
+                + sNote.getContent().
+                replace("<", "&lt;").
+                replace(">", "&gt;").
+                replace("\n", "<br/>");
+        if (resources != null && resources.size() > 0) {
+            for (Attachment attachment : resources) {
+                InputStream in = null;
+                try {
+                    if (attachment.getPath() == null)
+                        break;
+                    in = new BufferedInputStream(new FileInputStream(attachment.getPath()));
+                    FileData data = new FileData(EvernoteUtil.hash(in), new File(attachment.getPath()));
+                    ResourceAttributes attributes = new ResourceAttributes();
+                    attributes.setFileName(attachment.getFileName());
+                    Resource resource = new Resource();
+                    resource.setData(data);
+                    resource.setMime(attachment.getMimeType());
+                    resource.setAttributes(attributes);
+                    note.addToResources(resource);
+                    content += EvernoteUtil.createEnMediaTag(resource);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        content += EvernoteUtil.NOTE_SUFFIX;
+        note.setContent(content);
+        note.setGuid(sNote.getGuid());
+        note.setActive(true);
         Note result = mEvernoteSession.getEvernoteClientFactory()
-                .getNoteStoreClient().updateNote(updateNote);
+                .getNoteStoreClient().updateNote(note);
         sNote.setStatus(SNote.Status.IDLE.getValue());
         sNote.setLastOprTime(result.getUpdated());
         mFinalDb.update(sNote);
-        return result;
+        return note;
     }
 
     /**
-     *
      * @param sNote
      * @throws Exception
      */
+
     public void pullUpdateNote(SNote sNote) throws Exception {
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
                 .getNote(sNote.getGuid(), true, false, false, false);
@@ -272,6 +340,7 @@ public class EverNoteUtils {
 
     /**
      * 获取笔记内容
+     *
      * @param guid
      * @throws Exception
      */
@@ -280,6 +349,7 @@ public class EverNoteUtils {
             return;
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
                 .getNote(guid, true, false, false, false);
+        note.getResources();//获取的附件
         SNote sNote = new SNote();
         sNote.parseFromNote(note);
         mFinalDb.saveBindId(sNote);
@@ -287,6 +357,7 @@ public class EverNoteUtils {
 
     /**
      * 删除笔记
+     *
      * @param guid
      * @throws Exception
      */
@@ -299,6 +370,7 @@ public class EverNoteUtils {
 
     /**
      * 删除本地笔记
+     *
      * @param guid
      */
     public void deleteLocalNote(String guid) {
@@ -321,6 +393,7 @@ public class EverNoteUtils {
 
     /**
      * 更新笔记
+     *
      * @param sNote 笔记
      * @return
      * @throws Exception
@@ -344,6 +417,7 @@ public class EverNoteUtils {
 
     /**
      * 更新笔记
+     *
      * @throws Exception
      */
     public void pushNotes() throws Exception {
@@ -357,6 +431,7 @@ public class EverNoteUtils {
 
     /**
      * 更新笔记
+     *
      * @throws Exception
      */
     public void pullNotes() throws Exception {
@@ -364,7 +439,6 @@ public class EverNoteUtils {
         NoteFilter noteFilter = new NoteFilter();
         noteFilter.setOrder(NoteSortOrder.UPDATED.getValue());
         String guid = mPreferenceUtils.getStringParam(PreferenceUtils.EVERNOTE_NOTEBOOK_GUID_KEY);
-
         noteFilter.setNotebookGuid(guid);
         NotesMetadataResultSpec spec = new NotesMetadataResultSpec();
         spec.setIncludeUpdated(true);
@@ -414,6 +488,7 @@ public class EverNoteUtils {
 
     /**
      * 检测登录
+     *
      * @param silence
      * @return
      */
@@ -428,6 +503,7 @@ public class EverNoteUtils {
 
     /**
      * 查看是否登录
+     *
      * @return
      */
     public SyncResult checkLogin() {
@@ -439,6 +515,7 @@ public class EverNoteUtils {
 
     /**
      * 同步笔记
+     *
      * @param type
      * @return
      */

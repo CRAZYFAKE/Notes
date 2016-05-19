@@ -8,14 +8,14 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/book_name"
         android:layout_width="400dp"
-        android:paddingTop="10dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:hint="@string/new_notebook"/>
+            android:hint="@string/new_notebook"
+            android:paddingTop="10dp" />
 
     </android.support.design.widget.TextInputLayout>
 

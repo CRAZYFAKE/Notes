@@ -37,7 +37,7 @@ public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filt
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.notes_item_layout, parent, false);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_notes_layout, parent, false);
         return new NotesItemViewHolder(view);
     }
 

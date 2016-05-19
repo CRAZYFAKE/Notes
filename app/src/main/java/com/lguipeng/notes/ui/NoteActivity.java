@@ -1,6 +1,5 @@
 package com.lguipeng.notes.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,7 +31,6 @@ import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.impl.NotePresenter;
 import com.lguipeng.notes.mvp.views.impl.NoteView;
 import com.lguipeng.notes.utils.DialogUtils;
-import com.lguipeng.notes.view.FloatingMenuHidable;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
@@ -44,8 +42,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.OnClick;
-import cc.trity.floatingactionbutton.FloatingActionButton;
 
 public class NoteActivity extends BaseActivity implements NoteView {
     @Bind(R.id.toolbar)
@@ -59,15 +55,6 @@ public class NoteActivity extends BaseActivity implements NoteView {
     @Bind(R.id.frame_layout)
     FrameLayout mFramLayout;
 
-    //添加附件按钮
-    @Bind(R.id.attach_content)
-    FloatingMenuHidable attachContent;
-    @Bind(R.id.fb_attach_image)
-    FloatingActionButton attachImage;
-    @Bind(R.id.fb_attach_audio)
-    FloatingActionButton attachAudio;
-    @Bind(R.id.fb_attach_file)
-    FloatingActionButton attachFile;
     private MenuItem doneMenuItem;
     private int width;
     @Inject
@@ -281,45 +268,9 @@ public class NoteActivity extends BaseActivity implements NoteView {
         inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
-    @OnClick(R.id.fb_attach_image)
-    public void attachImage() {
-        notePresenter.attachImage(this);
-        attachContent.collapse();//折叠列表
-    }
-
-    @OnClick(R.id.fb_attach_audio)
-    public void attachAudio() {
-        notePresenter.attachAudio(this);
-        attachContent.collapse();
-    }
-
-    @OnClick(R.id.fb_attach_file)
-    public void attachFile() {
-        notePresenter.attachFile(this);
-        attachContent.collapse();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case NotePresenter.REQ_SELECT_IMAGE:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    Bitmap pic = getBitmap(data.getData());
-                    notePresenter.attachImage(contentEditText, width, pic, data);
-
-                }
-                break;
-            case NotePresenter.REQ_SELECT_AUDIO:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                }
-                break;
-            case NotePresenter.REQ_SELECT_FILE:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                }
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-                break;
         }
     }
 

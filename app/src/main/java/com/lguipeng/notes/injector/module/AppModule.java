@@ -36,7 +36,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    //创建数据库Dao
+        //创建数据库Dao
     FinalDb.DaoConfig provideDaoConfig(@ContextLifeCycle("App") Context context) {
         FinalDb.DaoConfig config = new FinalDb.DaoConfig();
         config.setDbName("notes.db");

@@ -35,13 +35,14 @@
     <string name="search_note">搜索笔记</string>
     <string name="edit_note">编辑笔记</string>
     <string name="view_note">查看笔记</string>
+    <string name="select_operate">选择操作</string>
     <string name="show_note_history_log_key">show_note_history_log_key</string>
     <string name="right_hand_mode_key">right_hand_mode_key</string>
     <string name="move_success">成功移除</string>
     <string name="recover">恢复</string>
     <string name="create">创建</string>
     <string name="advice_feedback_key">advice_feedback_key</string>
-    <string name="no_email_app_tip">请先安装邮件应用并设置账户,或直接发送邮件至 lgpszu@163.com</string>
+    <string name="no_email_app_tip">请先安装邮件应用并设置账户,或直接发送邮件至 apyixiang@outlook.com</string>
     <string name="sync_account_key">sync_account_key</string>
     <string name="sync_success">同步成功</string>
     <string name="sync_fail">同步失败，建议在网络好的时候进行同步</string>
@@ -108,5 +109,12 @@
     <string name="empty_books">没有笔记本</string>
     <string name="new_notebook">创建笔记本</string>
     <string name="note_bookname">笔记本名称</string>
+    <string name="select_image">请选择图片</string>
+    <string name="select_audio">请选择音频</string>
+    <string name="select_file">请选择文件</string>
+    <string name="hello_world">你好，世界！</string>
+    <string name="action_settings"> </string>
+    <string name="open_file">打开文件</string>
+    <string name="no_application">没有应用程序可以打开次文件！</string>
 
 </resources>

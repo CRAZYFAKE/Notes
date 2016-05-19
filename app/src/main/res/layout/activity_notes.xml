@@ -60,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_add"
+                android:visibility="gone"
                 app:layout_anchor="@id/refresh"
                 app:layout_anchorGravity="bottom|right|end"
                 app:layout_behavior="com.lguipeng.notes.view.behavior.FabBehavior"

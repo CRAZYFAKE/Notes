@@ -14,6 +14,6 @@ public class DrawerListAdapter extends SimpleListAdapter{
 
     @Override
     protected int getLayout() {
-        return R.layout.drawer_list_item_layout;
+        return R.layout.item_drawer_list_layout;
     }
 }
