@@ -2,22 +2,12 @@ package com.lguipeng.notes.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -32,12 +22,6 @@ import com.lguipeng.notes.mvp.presenters.impl.NotePresenter;
 import com.lguipeng.notes.mvp.views.impl.NoteView;
 import com.lguipeng.notes.utils.DialogUtils;
 import com.rengwuxian.materialedittext.MaterialEditText;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -56,7 +40,6 @@ public class NoteActivity extends BaseActivity implements NoteView {
     FrameLayout mFramLayout;
 
     private MenuItem doneMenuItem;
-    private int width;
     @Inject
     NotePresenter notePresenter;
 
@@ -64,7 +47,6 @@ public class NoteActivity extends BaseActivity implements NoteView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializePresenter();
-        getEditTextWidth();
         notePresenter.onCreate(savedInstanceState);
     }
 
@@ -175,40 +157,8 @@ public class NoteActivity extends BaseActivity implements NoteView {
     @Override
     public void initViewOnCreateMode(SNote note) {
         labelEditText.requestFocus();
-        //labelEditText.addTextChangedListener(notePresenter);
+        labelEditText.addTextChangedListener(notePresenter);
         contentEditText.addTextChangedListener(notePresenter);
-    }
-
-    public void showAttachImg(String content) {
-        //匹配以"<img src='"开头，以"'/>"结尾的字符串
-        Pattern p = Pattern.compile("<img src='(.*?)'/>");
-        Matcher m = p.matcher(content);
-        ArrayList<String> paths = new ArrayList<String>();
-        while (m.find()) {
-            paths.add(m.group(1));
-        }
-        if (paths.size() <= 0) {
-            return;
-        }
-        //将所有匹配到的String保存到strs中
-        for (String filepath : paths) {
-            File file = new File(filepath);
-            Bitmap pic = null;
-            if (file.exists()) {
-                pic = BitmapFactory.decodeFile(filepath);
-                float scaleWidth = ((float) width) / pic.getWidth();
-                Matrix mx = new Matrix();
-                mx.setScale(scaleWidth, scaleWidth);
-                pic = Bitmap.createBitmap(pic, 0, 0, pic.getWidth(), pic.getHeight(), mx, true);
-                SpannableString ss = new SpannableString(filepath);
-                ImageSpan imgSpan = new ImageSpan(this, pic);
-                ss.setSpan(imgSpan, 0, filepath.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Editable editText = contentEditText.getEditableText();
-//                editText.replace();
-            } else {
-                return;
-            }
-        }
     }
 
     @Override
@@ -270,50 +220,30 @@ public class NoteActivity extends BaseActivity implements NoteView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
         switch (requestCode) {
+            case NotePresenter.NOTE_REQUEST_CODE:
+                int isChanged = data.getExtras().getInt(NotePresenter.IS_ATTACHMENT_CHANGED);
+                if (isChanged == 1) {
+                    setDoneMenuItemVisible(true);
+                } else {
+                    setDoneMenuItemVisible(false);
+                }
+                break;
+            default:
+                break;
         }
     }
 
-    /**
-     * 通过路径获取系统图片
-     */
-    private Bitmap getBitmap(Uri uri) {
-        Bitmap pic = null;
-        BitmapFactory.Options op = new BitmapFactory.Options();
-        op.inJustDecodeBounds = true;
-        Display display = getWindowManager().getDefaultDisplay();
-        int dw = display.getWidth();
-        int dh = display.getHeight();
-        try {
-            pic = BitmapFactory.decodeStream(getContentResolver()
-                    .openInputStream(uri), null, op);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        int wRatio = (int) Math.ceil(op.outWidth / (float) dw);
-        int hRatio = (int) Math.ceil(op.outHeight / (float) dh);
-        if (wRatio > 1 && hRatio > 1) {
-            op.inSampleSize = wRatio + hRatio;
-        }
-        op.inJustDecodeBounds = false;
-        try {
-            pic = BitmapFactory.decodeStream(getContentResolver()
-                    .openInputStream(uri), null, op);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return pic;
+    @Override
+    public void startAttachmentActivityForResult(SNote note) {
+        Intent intent = new Intent(NoteActivity.this, AttachmentActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(NotePresenter.CURRENT_NOTE, note);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, NotePresenter.NOTE_REQUEST_CODE);
     }
 
-    private void getEditTextWidth() {
-        ViewTreeObserver vto = contentEditText.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                contentEditText.getViewTreeObserver().removeGlobalOnLayoutListener(
-                        this);
-                width = contentEditText.getWidth();
-            }
-        });
-    }
 }

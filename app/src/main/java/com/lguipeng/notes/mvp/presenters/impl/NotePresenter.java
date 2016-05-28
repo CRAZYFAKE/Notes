@@ -3,19 +3,12 @@ package com.lguipeng.notes.mvp.presenters.impl;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 import com.lguipeng.notes.R;
 import com.lguipeng.notes.injector.ContextLifeCycle;
@@ -25,15 +18,9 @@ import com.lguipeng.notes.mvp.views.View;
 import com.lguipeng.notes.mvp.views.impl.NoteView;
 import com.lguipeng.notes.ui.AttachmentActivity;
 import com.lguipeng.notes.ui.NoteActivity;
-import com.lguipeng.notes.utils.AttachmentUtils;
 import com.lguipeng.notes.utils.TimeUtils;
 
 import net.tsz.afinal.FinalDb;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -41,24 +28,27 @@ import de.greenrobot.event.EventBus;
 
 public class NotePresenter implements Presenter, android.view.View.OnFocusChangeListener,
         DialogInterface.OnClickListener, TextWatcher {
+
+    public final static int NOTE_REQUEST_CODE = 10001;
+    public final static String CURRENT_NOTE = "CURRENT_NOTE";
+    public final static String OPERATE_NOTE_TYPE_KEY = "OPERATE_NOTE_TYPE_KEY";
+    public final static String IS_ATTACHMENT_CHANGED = "IS_ATTACHMENT_CHANGED";
+
     private NoteView view;
     private final Context mContext;
     private FinalDb mFinalDb;
     private SNote note;
     private int operateMode = 0;
-    private AttachmentUtils mAttachmentUtils;
     private MainPresenter.NotifyEvent<SNote> event;
     private SNote.NoteType mCurrentNoteTypePage = SNote.NoteType.getDefault();
-    public final static String OPERATE_NOTE_TYPE_KEY = "OPERATE_NOTE_TYPE_KEY";
     public final static int VIEW_NOTE_MODE = 0x00;
     public final static int EDIT_NOTE_MODE = 0x01;
     public final static int CREATE_NOTE_MODE = 0x02;
 
     @Inject
-    public NotePresenter(@ContextLifeCycle("Activity") Context mContext, FinalDb mFinalDb, AttachmentUtils mAttachmentUtils) {
+    public NotePresenter(@ContextLifeCycle("Activity") Context mContext, FinalDb mFinalDb) {
         this.mContext = mContext;
         this.mFinalDb = mFinalDb;
-        this.mAttachmentUtils = mAttachmentUtils;
     }
 
     @Override
@@ -81,7 +71,8 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
                 saveNote();
                 return true;
             case R.id.attachment:
-                startAttachmentActivity(note);
+//                startAttachmentActivity(note);
+                view.startAttachmentActivityForResult(note);
                 return true;
             case android.R.id.home:
                 view.hideKeyBoard();
@@ -95,15 +86,11 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
         }
     }
 
-    public void attachItem() {
-        SNote note = new SNote();
-        note.setType(mCurrentNoteTypePage);
-        startNoteActivity(NotePresenter.CREATE_NOTE_MODE, note);
-    }
-
     private void startAttachmentActivity(SNote value) {
         Intent intent = new Intent(mContext, AttachmentActivity.class);
-        intent.putExtra("noteGuid", value.getGuid());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CURRENT_NOTE, value);
+        intent.putExtras(bundle);
         mContext.startActivity(intent);
     }
 
@@ -208,53 +195,6 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
         view.setOperateTimeLineTextView(getOprTimeLineText(note));
     }
 
-    public void attachImage(EditText editText, int width, Bitmap pic, Intent data) {
-        mAttachmentUtils.attachImage(editText, width, pic, data);
-    }
-
-    public void attachImage(EditText editText, int width, String filepath) {
-        File file = new File(filepath);
-        Bitmap pic = null;
-        if (file.exists()) {
-            pic = BitmapFactory.decodeFile(filepath);
-//            mAttachmentUtils.attachImage(editText, width, pic, filepath);
-        } else {
-            return;
-        }
-    }
-
-    public void showAttachImg(EditText editText, int width, String content) {
-        //匹配以"<img src='"开头，以"'/>"结尾的字符串
-        Pattern p = Pattern.compile("<img src='(.*?)'/>");
-        Matcher m = p.matcher(content);
-        ArrayList<String> paths = new ArrayList<String>();
-        while (m.find()) {
-            paths.add(m.group(1));
-        }
-        if (paths.size() <= 0) {
-            return;
-        }
-        //将所有匹配到的String保存到strs中
-        for (String filepath : paths) {
-            File file = new File(filepath);
-            Bitmap pic = null;
-            if (file.exists()) {
-                pic = BitmapFactory.decodeFile(filepath);
-                float scaleWidth = ((float) width) / pic.getWidth();
-                Matrix mx = new Matrix();
-                mx.setScale(scaleWidth, scaleWidth);
-                pic = Bitmap.createBitmap(pic, 0, 0, pic.getWidth(), pic.getHeight(), mx, true);
-                SpannableString ss = new SpannableString(filepath);
-                ImageSpan imgSpan = new ImageSpan(mContext, pic);
-                ss.setSpan(imgSpan, 0, filepath.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Editable edit_text = editText.getEditableText();
-                edit_text.insert(0, ss);
-            } else {
-                return;
-            }
-        }
-    }
-
     /**
      * 保存笔记
      */
@@ -349,5 +289,4 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
                 break;
         }
     }
-
 }

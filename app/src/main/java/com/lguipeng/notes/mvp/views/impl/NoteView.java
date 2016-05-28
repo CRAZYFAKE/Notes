@@ -16,6 +16,7 @@ public interface NoteView extends View {
     void setDoneMenuItemVisible(boolean visible);
     boolean isDoneMenuItemVisible();
     boolean isDoneMenuItemNull();
+    void startAttachmentActivityForResult(SNote note);
     String getLabelText();
     String getContentText();
     void hideKeyBoard();

@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import com.lguipeng.notes.R;
 import com.lguipeng.notes.adpater.AttachmentsAdapter;
 import com.lguipeng.notes.adpater.base.BaseRecyclerViewAdapter;
 import com.lguipeng.notes.model.Attachment;
+import com.lguipeng.notes.model.SNote;
+import com.lguipeng.notes.mvp.presenters.impl.NotePresenter;
 import com.lguipeng.notes.utils.FileUtils;
 import com.lguipeng.notes.utils.ToolbarUtils;
 import com.lguipeng.notes.view.FixedRecyclerView;
@@ -36,7 +39,6 @@ import butterknife.OnClick;
 import cc.trity.floatingactionbutton.FloatingActionButton;
 
 public class AttachmentActivity extends BaseActivity {
-
 
     public final static int SELECT_IMAGE = 100;
     public final static int SELECT_AUDIO = 101;
@@ -64,29 +66,43 @@ public class AttachmentActivity extends BaseActivity {
     private AttachmentsAdapter mAttachmentsAdapter;
     private List<Attachment> attachmentList;
     private FinalDb mFinalDb;
+    private SNote mCurrentNote;
+    private int mNoteId;
     private String mNoteGuid;
     private Context mContext;
+    private int mIsChanged;//0-》未改变，1-》改变了
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFinalDb = FinalDb.create(this);
-        mNoteGuid = getIntent().getStringExtra("noteGuid");
-        attachmentList = new ArrayList<Attachment>();
-        this.mContext = this;
         launchWithNoAnim();
         fixRecyclerView();
         enableSwipeRefreshLayout(false);
-        initializePresenter();
+        initData();
+        initList();
+
     }
 
-    private void initializePresenter() {
-        attachmentList = mFinalDb.findAllByWhere(Attachment.class, "noteGuid=\"" + mNoteGuid + "\"");
+    private void initData() {
+        mFinalDb = FinalDb.create(this);
+        mCurrentNote = (SNote) getIntent().getExtras().getSerializable(NotePresenter.CURRENT_NOTE);
+        mNoteGuid = mCurrentNote.getGuid();
+        mNoteId = mCurrentNote.getId();
+        mIsChanged = 0;
+        attachmentList = new ArrayList<Attachment>();
+        this.mContext = this;
+    }
+
+    private void initList() {
+        attachmentList = mFinalDb.findAllByWhere(Attachment.class, "noteId=\"" + mNoteId + "\"");
         initRecyclerView(attachmentList);
     }
 
     public void initRecyclerView(List<Attachment> attachments) {
+        if (attachments.size() <= 0) {
+            return;
+        }
         mAttachmentsAdapter = new AttachmentsAdapter(attachments, this);
         mAttachmentsView.setHasFixedSize(true);
         mAttachmentsAdapter.setOnInViewClickListener(R.id.attachment_more,
@@ -121,6 +137,7 @@ public class AttachmentActivity extends BaseActivity {
             case R.id.delete_attachment:
                 mFinalDb.delete(attachment);
                 mAttachmentsAdapter.remove(attachment);
+                mIsChanged = 1;
                 break;
             default:
                 break;
@@ -153,7 +170,7 @@ public class AttachmentActivity extends BaseActivity {
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         if (toolbar != null) {
-            toolbar.setNavigationOnClickListener((view) -> finish());
+            toolbar.setNavigationOnClickListener((view) -> setResult());
         }
     }
 
@@ -177,26 +194,6 @@ public class AttachmentActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode) {
-//            case SELECT_IMAGE:
-//                if (resultCode == Activity.RESULT_OK && data != null) {
-//                    saveImage(data);
-//                }
-//                break;
-//            case SELECT_AUDIO:
-//                if (resultCode == Activity.RESULT_OK && data != null) {
-//                    saveAudio(data);
-//                }
-//                break;
-//            case SELECT_FILE:
-//                if (resultCode == Activity.RESULT_OK && data != null) {
-//                    saveFile(data);
-//                }
-//                break;
-//            default:
-//                super.onActivityResult(requestCode, resultCode, data);
-//                break;
-//        }
         if (resultCode == Activity.RESULT_OK && data != null) {
             switch (requestCode) {
                 case SELECT_IMAGE:
@@ -219,6 +216,7 @@ public class AttachmentActivity extends BaseActivity {
 
     /**
      * 选择文件后，
+     *
      * @param data
      */
     public void saveAudio(Intent data) {
@@ -247,16 +245,19 @@ public class AttachmentActivity extends BaseActivity {
                 cursor.close();
             }
         }
-
-        if (fileName == "" || path == "" || mNoteGuid == "" || mimeType == "") {
+        if (fileName == "" || path == "" || mimeType == "") {
             return;
         }
         attachment.setFileName(fileName);
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
+        attachment.setNoteId(mNoteId);
         attachment.setNoteGuid(mNoteGuid);
         mFinalDb.saveBindId(attachment);
+        mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
+        mFinalDb.update(mCurrentNote);
         mAttachmentsAdapter.add(attachment);
+        mIsChanged = 1;
     }
 
     public void saveImage(Intent data) {
@@ -285,16 +286,19 @@ public class AttachmentActivity extends BaseActivity {
                 cursor.close();
             }
         }
-
-        if (fileName == "" || path == "" || mNoteGuid == "" || mimeType == "") {
+        if (fileName == "" || path == "" || mimeType == "") {
             return;
         }
         attachment.setFileName(fileName);
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
+        attachment.setNoteId(mNoteId);
         attachment.setNoteGuid(mNoteGuid);
         mFinalDb.saveBindId(attachment);
+        mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
+        mFinalDb.update(mCurrentNote);
         mAttachmentsAdapter.add(attachment);
+        mIsChanged = 1;
     }
 
     /**
@@ -308,19 +312,23 @@ public class AttachmentActivity extends BaseActivity {
         String path = attach.getPath();
         String fileName = FileUtils.getFileName(path);
         String mimeType = FileUtils.getMimeType(new File(path));
-        if (fileName == "" || path == "" || mNoteGuid == "" || mimeType == "") {
+        if (fileName == "" || path == "" || mimeType == "") {
             return;
         }
         attachment.setFileName(fileName);
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
+        attachment.setNoteId(mNoteId);
         attachment.setNoteGuid(mNoteGuid);
         mFinalDb.saveBindId(attachment);
+        mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
+        mFinalDb.update(mCurrentNote);
         mAttachmentsAdapter.add(attachment);
+        mIsChanged = 1;
     }
 
     /**
-     * 查看附件
+     * 查看附件，根据附件类型提示使用不同的应用查看附件
      *
      * @param attachment
      */
@@ -328,12 +336,9 @@ public class AttachmentActivity extends BaseActivity {
         File file = new File(attachment.getPath());
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //设置intent的Action属性
         intent.setAction(Intent.ACTION_VIEW);
-        //获取文件file的MIME类型
         String type = FileUtils.getMimeType(file);
-        //设置intent的data和Type属性。
-        intent.setDataAndType(/*uri*/Uri.fromFile(file), type);
+        intent.setDataAndType(Uri.fromFile(file), type);
         //跳转
         try {
             startActivity(Intent.createChooser(intent, getResources().getString(R.string.open_file)));
@@ -343,7 +348,7 @@ public class AttachmentActivity extends BaseActivity {
     }
 
     /**
-     * 添加图片
+     * 跳转到选择图片界面
      *
      * @param activity
      */
@@ -354,7 +359,7 @@ public class AttachmentActivity extends BaseActivity {
     }
 
     /**
-     * 添加音频
+     * 跳转到选择音频界面
      *
      * @param activity
      */
@@ -365,7 +370,7 @@ public class AttachmentActivity extends BaseActivity {
     }
 
     /**
-     * 添加文件
+     * 跳转转到选择文件界面
      *
      * @param activity
      */
@@ -379,5 +384,31 @@ public class AttachmentActivity extends BaseActivity {
 
     public void enableSwipeRefreshLayout(boolean enable) {
         refreshLayout.setEnabled(enable);
+    }
+
+
+    /**
+     * 点击返回按钮，执行setResult()函数
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            setResult();
+        }
+        return false;
+    }
+
+    /**
+     * 将是否更改附件mIsChanged，回传给NoteActiviy。
+     */
+    public void setResult() {
+        Intent intent = new Intent();
+        intent.putExtra(NotePresenter.IS_ATTACHMENT_CHANGED, mIsChanged);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Attachment implements Serializable {
 
     private int id;
+    private int noteId;
     private String guid;
     private String noteGuid;
     private String fileName;
@@ -31,6 +32,14 @@ public class Attachment implements Serializable {
 
     public String getGuid() {
         return guid;
+    }
+
+    public void setNoteId(int noteId) {
+        this.noteId = noteId;
+    }
+
+    public int getNoteId() {
+        return noteId;
     }
 
     public void setNoteGuid(String noteGuid) {
