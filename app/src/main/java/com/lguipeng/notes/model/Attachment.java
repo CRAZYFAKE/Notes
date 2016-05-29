@@ -13,7 +13,6 @@ public class Attachment implements Serializable {
     private int id;
     private int noteId;
     private String guid;
-    private String noteGuid;
     private String fileName;
     private String mimeType;
     private String path;
@@ -40,14 +39,6 @@ public class Attachment implements Serializable {
 
     public int getNoteId() {
         return noteId;
-    }
-
-    public void setNoteGuid(String noteGuid) {
-        this.noteGuid = noteGuid;
-    }
-
-    public String getNoteGuid() {
-        return noteGuid;
     }
 
     public void setFileName(String fileName) {
@@ -78,7 +69,6 @@ public class Attachment implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[guid:" + guid + ",");
-        sb.append("noteGuid:" + noteGuid + ",");
         sb.append("name:" + fileName + ",");
         sb.append("type:" + mimeType + ",");
         sb.append("path:" + path + "]");

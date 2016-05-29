@@ -132,5 +132,4 @@ public class PermissionRequester {
         // for request permission error
         void onError();
     }
-
 }

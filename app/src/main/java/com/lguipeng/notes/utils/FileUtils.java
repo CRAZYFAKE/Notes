@@ -22,11 +22,16 @@ public class FileUtils {
     public final static String APP_DIR = SD_ROOT_DIR + File.separator + "SNotes";
     public final static String BACKUP_FILE_NAME = "notes.txt";
 
+    public final static String SD_CARD_NOT_READY = "sd card not ready";
+
     @Inject
     @Singleton
     public FileUtils() {
     }
 
+    /**
+     * 创建系统根目录
+     */
     private void makeSureAppDirCreated() {
         if (checkSdcardStatus()) {
             mkdir(APP_DIR);
@@ -35,15 +40,31 @@ public class FileUtils {
         }
     }
 
-    public void mkdir(String dir) {
+    /**
+     * 创建附件路径
+     *
+     * @param lable
+     */
+    public String createAttDir(String lable) {
+        if (checkSdcardStatus()) {
+            return mkdir(APP_DIR + File.separator + lable);
+        } else {
+            return SD_CARD_NOT_READY;
+        }
+    }
+
+    public String mkdir(String dir) {
         if (TextUtils.isEmpty(dir))
-            return;
+            return "";
         File dirFile = new File(dir);
         if (!dirFile.exists()) {
             boolean res = dirFile.mkdir();
             if (!res) {
                 NotesLog.e("make dir " + dir + " error!");
             }
+            return dir;
+        } else {
+            return dir;
         }
     }
 

@@ -32,6 +32,7 @@ import net.tsz.afinal.FinalDb;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,6 +41,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class EverNoteUtils {
 
@@ -51,14 +59,22 @@ public class EverNoteUtils {
 
     private FinalDb mFinalDb;
 
+    private Context mContext;
+
+    private FileUtils mFileUtils;
+
     public static final String NOTE_BOOK_NAME = "简笔";
 
     @Inject
-    public EverNoteUtils(@ContextLifeCycle("App") Context mContext, ThreadExecutorPool pool, FinalDb mFinalDb, PreferenceUtils mPreferenceUtils) {
+    public EverNoteUtils(@ContextLifeCycle("App") Context mContext, ThreadExecutorPool pool,
+                         FinalDb mFinalDb, PreferenceUtils mPreferenceUtils,
+                         FileUtils mFileUtils) {
         mEvernoteSession = EvernoteSession.getInstance();
         this.mPreferenceUtils = mPreferenceUtils;
         this.mThreadExecutorPool = pool;
         this.mFinalDb = mFinalDb;
+        this.mContext = mContext;
+        this.mFileUtils = mFileUtils;
     }
 
     /**
@@ -98,6 +114,7 @@ public class EverNoteUtils {
     public User getUser() throws Exception {
         return mEvernoteSession.getEvernoteClientFactory()
                 .getUserStoreClient().getUser();
+
     }
 
     public void getUser(EvernoteCallback<User> callback) throws Exception {
@@ -265,20 +282,10 @@ public class EverNoteUtils {
      * @throws Exception
      */
     public Note pushUpdateNote(SNote sNote) throws Exception {
-        //修改代码之前
-//        Note updateNote = sNote.parseToNote();
-//        updateNote.setGuid(sNote.getGuid());
-//        updateNote.setActive(true);
-//        Note result = mEvernoteSession.getEvernoteClientFactory()
-//                .getNoteStoreClient().updateNote(updateNote);
-//        sNote.setStatus(SNote.Status.IDLE.getValue());
-//        sNote.setLastOprTime(result.getUpdated());
-//        mFinalDb.update(sNote);
-//        return result;
-        List<Attachment> resources = new ArrayList<Attachment>();
+        List<Attachment> resources;
         Note note = new Note();
         note.setTitle(sNote.getLabel());
-        resources = mFinalDb.findAllByWhere(Attachment.class, "noteGuid=\"" + sNote.getGuid() + "\"");
+        resources = mFinalDb.findAllByWhere(Attachment.class, "noteId=\"" + sNote.getId() + "\"");
         String content = EvernoteUtil.NOTE_PREFIX
                 + sNote.getContent().
                 replace("<", "&lt;").
@@ -339,20 +346,110 @@ public class EverNoteUtils {
     }
 
     /**
-     * 获取笔记内容
+     * 获取笔记内容并保存到本地数据库
      *
-     * @param guid
+     * @param noteGuid
      * @throws Exception
      */
-    public void loadEverNote(String guid) throws Exception {
-        if (TextUtils.isEmpty(guid))
+    public void loadEverNote(String noteGuid) throws Exception {
+        if (TextUtils.isEmpty(noteGuid))
             return;
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
-                .getNote(guid, true, false, false, false);
-        note.getResources();//获取的附件
+                .getNote(noteGuid, true, false, false, false);
         SNote sNote = new SNote();
         sNote.parseFromNote(note);
         mFinalDb.saveBindId(sNote);
+        if (note.getResources() == null) {
+            return;
+        } else {
+            if (note.getResources().size() <= 0) {
+                return;
+            } else {
+                List<Resource> resourceList = note.getResources();
+                for (Resource resource : resourceList) {
+                    downloadAttachment(note, resource.getGuid());
+                }
+            }
+        }
+    }
+
+    /**
+     * 下载附件
+     *
+     * @param note    笔记
+     * @param resGuid 附件唯一识别的id
+     */
+    public void downloadAttachment(Note note, String resGuid) {
+        String fileName = "", mimeType;
+        String lable = note.getTitle();
+        int noteID = mFinalDb.findAllByWhere(SNote.class, "guid=\"" +
+                note.getGuid() + "\"").get(0).getId();
+        String path = mFileUtils.createAttDir(lable);
+        try {
+            Resource resource = mEvernoteSession.getEvernoteClientFactory()
+                    .getNoteStoreClient().getResource(resGuid, true, false, true, false);
+            if (!resource.getAttributes().getFileName().equals("")) {
+                fileName = resource.getAttributes().getFileName();
+            }
+            mimeType = resource.getMime();
+            String resUrl = mPreferenceUtils.getApiPrefix() + "/res/" + resGuid;
+            //如果没有SD卡停止下载附件
+            if (path.equals(FileUtils.SD_CARD_NOT_READY)) {
+                return;
+            }
+            Attachment attachment = new Attachment();
+            attachment.setNoteId(noteID);
+            attachment.setFileName(fileName);
+            attachment.setMimeType(mimeType);
+            attachment.setGuid(resGuid);
+            attachment.setPath(path + File.separator + fileName);
+            mFinalDb.save(attachment);
+            downloadFile(resUrl, path, fileName);
+        } catch (Exception e) {
+            NotesLog.e(e.toString());
+        }
+    }
+
+
+    /**
+     * post请求下载文件，需要携带名为auth的印象笔记认证参数
+     *
+     * @param url  地址
+     * @param path 下载的文件地址
+     */
+    private void downloadFile(final String url, final String path, final String fileName) {
+        final String auth = PreferenceUtils.getInstance(mContext).getAuth();
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = new FormBody.Builder().add("auth", auth).build();
+        Request request = new Request.Builder().url(url).post(body).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    InputStream is = response.body().byteStream();
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    File downLoad = new File(file, fileName);
+                    FileOutputStream fos = new FileOutputStream(downLoad);
+                    int len = -1;
+                    byte[] buffer = new byte[1024];
+                    while ((len = is.read(buffer)) != -1) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.flush();
+                    fos.close();
+                    is.close();
+                }
+            }
+        });
     }
 
     /**
@@ -468,13 +565,14 @@ public class EverNoteUtils {
         for (NoteMetadata data : list.getNotes()) {
             guids.remove(data.getGuid());
             List<SNote> sNotes = mFinalDb.findAllByWhere(SNote.class, "guid = '" + data.getGuid() + "'");
+            //根据返回的笔记更新时间来判断是否更新本地笔记
             if (sNotes != null && sNotes.size() > 0) {
-                //update
+                //上传
                 SNote sNote = sNotes.get(0);
                 if (data.getUpdated() > sNote.getLastOprTime())
                     pullUpdateNote(sNote);
             } else {
-                //pull
+                //下载更新
                 loadEverNote(data.getGuid());
             }
         }
@@ -567,6 +665,8 @@ public class EverNoteUtils {
             }
             return SyncResult.SUCCESS;
         } catch (Exception e) {
+            System.out.println(e);
+            NotesLog.e(e.toString());
             e.printStackTrace();
             return SyncResult.ERROR_OTHER;
         }

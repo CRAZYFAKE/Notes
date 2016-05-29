@@ -252,7 +252,6 @@ public class AttachmentActivity extends BaseActivity {
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
         attachment.setNoteId(mNoteId);
-        attachment.setNoteGuid(mNoteGuid);
         mFinalDb.saveBindId(attachment);
         mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
         mFinalDb.update(mCurrentNote);
@@ -293,7 +292,6 @@ public class AttachmentActivity extends BaseActivity {
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
         attachment.setNoteId(mNoteId);
-        attachment.setNoteGuid(mNoteGuid);
         mFinalDb.saveBindId(attachment);
         mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
         mFinalDb.update(mCurrentNote);
@@ -319,7 +317,6 @@ public class AttachmentActivity extends BaseActivity {
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
         attachment.setNoteId(mNoteId);
-        attachment.setNoteGuid(mNoteGuid);
         mFinalDb.saveBindId(attachment);
         mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
         mFinalDb.update(mCurrentNote);

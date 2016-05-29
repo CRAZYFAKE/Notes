@@ -22,6 +22,7 @@ import com.lguipeng.notes.mvp.presenters.impl.SettingPresenter;
 import com.lguipeng.notes.mvp.views.impl.SettingView;
 import com.lguipeng.notes.ui.SettingActivity;
 import com.lguipeng.notes.utils.DialogUtils;
+import com.lguipeng.notes.utils.PreferenceUtils;
 import com.lguipeng.notes.utils.SnackbarUtils;
 import com.lguipeng.notes.utils.ThemeUtils;
 
@@ -31,12 +32,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class SettingFragment extends PreferenceFragment implements SettingView {
-    public static final String PREFERENCE_FILE_NAME = "note.settings";
-    //    private CheckBoxPreference rightHandModePreference;
     private Preference feedbackPreference;
     private CheckBoxPreference cardLayoutPreference;
-    private Preference payMePreference;
-    private Preference giveFavorPreference;
     private Preference everAccountPreference;
     @Inject
     SettingPresenter settingPresenter;
@@ -60,7 +57,7 @@ public class SettingFragment extends PreferenceFragment implements SettingView {
         super.onCreate(savedInstanceState);
         initializeDependencyInjector();
         addPreferencesFromResource(R.xml.prefs);
-        getPreferenceManager().setSharedPreferencesName(PREFERENCE_FILE_NAME);
+        getPreferenceManager().setSharedPreferencesName(PreferenceUtils.SETTINGS_PREFERENCE);
         initializePresenter();
         settingPresenter.onCreate(savedInstanceState);
     }
@@ -100,18 +97,10 @@ public class SettingFragment extends PreferenceFragment implements SettingView {
 
     @Override
     public void findPreference() {
-//        rightHandModePreference = (CheckBoxPreference) findPreference(getString(R.string.right_hand_mode_key));
         cardLayoutPreference = (CheckBoxPreference) findPreference(getString(R.string.card_note_item_layout_key));
         feedbackPreference = (Preference) findPreference(getString(R.string.advice_feedback_key));
         everAccountPreference = (Preference) findPreference(getString(R.string.ever_note_account_key));
-        payMePreference = (Preference) findPreference(getString(R.string.pay_for_me_key));
-        giveFavorPreference = (Preference) findPreference(getString(R.string.give_favor_key));
     }
-
-    //    @Override
-//    public void setRightHandModePreferenceChecked(boolean checked) {
-//        rightHandModePreference.setChecked(checked);
-//    }
 
     @Override
     public void setCardLayoutPreferenceChecked(boolean checked) {
