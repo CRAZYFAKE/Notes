@@ -336,7 +336,6 @@ public class EverNoteUtils {
      * @param sNote
      * @throws Exception
      */
-
     public void pullUpdateNote(SNote sNote) throws Exception {
         Note note = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient()
                 .getNote(sNote.getGuid(), true, false, false, false);
