@@ -116,5 +116,15 @@
     <string name="action_settings"> </string>
     <string name="open_file">打开文件</string>
     <string name="no_application">没有应用程序可以打开次文件！</string>
+    <string name="knife">富文本</string>
+    <string name="insert_link">插入链接</string>
+
+    <string name="toast_bold">加粗</string>
+    <string name="toast_italic">斜体</string>
+    <string name="toast_underline">下划线</string>
+    <string name="toast_strikethrough">中划线</string>
+    <string name="toast_bullet">列表</string>
+    <string name="toast_insert_link">插入链接</string>
+    <string name="toast_format_clear">清除格式</string>
 
 </resources>

@@ -8,15 +8,17 @@ import android.widget.TextView;
 
 import com.lguipeng.notes.R;
 
+import io.github.mthli.knife.KnifeText;
+
 public class NotesItemViewHolder extends RecyclerView.ViewHolder{
 
     private final TextView mNoteLabelTextView;
-    private final TextView mNoteContentTextView;
+    private final KnifeText mNoteContentTextView;
     private final TextView mNoteTimeTextView;
     public NotesItemViewHolder(View parent) {
         super(parent);
         mNoteLabelTextView = (TextView) parent.findViewById(R.id.note_label_text);
-        mNoteContentTextView = (TextView) parent.findViewById(R.id.note_content_text);
+        mNoteContentTextView = (KnifeText) parent.findViewById(R.id.note_content_text);
         mNoteTimeTextView = (TextView) parent.findViewById(R.id.note_last_edit_text);
     }
 
@@ -29,7 +31,11 @@ public class NotesItemViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void setContentText(CharSequence text){
-        setTextView(mNoteContentTextView, text);
+        mNoteContentTextView.fromHtml(text.toString());
+    }
+
+    public void setContentFocusable(){
+        mNoteContentTextView.setFocusable(false);
     }
 
     public void setContentText(int text){

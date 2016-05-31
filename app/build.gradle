@@ -133,4 +133,5 @@ dependencies {
     compile project(':orm-library')
     compile project(':evernote-sdk')
     compile project(':md-preference')
+    compile project(':knife')
 }

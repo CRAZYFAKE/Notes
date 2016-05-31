@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="KnifeText"><attr format="reference|color" name="bulletColor"/><attr format="reference|dimension" name="bulletRadius"/><attr format="reference|dimension" name="bulletGapWidth"/><attr format="reference|boolean" name="historyEnable"/><attr format="reference|integer" name="historySize"/><attr format="reference|color" name="linkColor"/><attr format="reference|boolean" name="linkUnderline"/><attr format="reference|color" name="quoteColor"/><attr format="reference|dimension" name="quoteStripeWidth"/><attr format="reference|dimension" name="quoteCapWidth"/></declare-styleable>
+    <!-- From: file:/F:/Notes/knife/build/intermediates/bundles/debug/res/values/values.xml -->
+    <eat-comment/>
+    <string name="app_name">Knife</string>
+</resources>

@@ -120,5 +120,16 @@
     <string name="select_file">Please select file</string>
     <string name="open_file">Open file</string>
     <string name="no_application">Please install application！</string>
+    <string name="knife">Knife</string>
+    <string name="insert_link">Insert Link</string>
+    <string name="dialog_edit_hint">http(s)://</string>
+
+    <string name="toast_bold">Bold</string>
+    <string name="toast_italic">Italic</string>
+    <string name="toast_underline">Underline</string>
+    <string name="toast_strikethrough">Strikethrough</string>
+    <string name="toast_bullet">Bullet</string>
+    <string name="toast_insert_link">Insert link</string>
+    <string name="toast_format_clear">Format clear</string>
 
 </resources>

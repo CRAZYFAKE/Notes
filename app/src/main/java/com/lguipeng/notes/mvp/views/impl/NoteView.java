@@ -19,6 +19,7 @@ public interface NoteView extends View {
     void startAttachmentActivityForResult(SNote note);
     String getLabelText();
     String getContentText();
+    boolean showKnifeTools();
     void hideKeyBoard();
     void showKeyBoard();
     void showNotSaveNoteDialog();

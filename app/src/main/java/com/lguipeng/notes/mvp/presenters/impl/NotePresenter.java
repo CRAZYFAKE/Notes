@@ -16,7 +16,6 @@ import com.lguipeng.notes.model.SNote;
 import com.lguipeng.notes.mvp.presenters.Presenter;
 import com.lguipeng.notes.mvp.views.View;
 import com.lguipeng.notes.mvp.views.impl.NoteView;
-import com.lguipeng.notes.ui.AttachmentActivity;
 import com.lguipeng.notes.ui.NoteActivity;
 import com.lguipeng.notes.utils.TimeUtils;
 
@@ -70,8 +69,10 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
             case R.id.done:
                 saveNote();
                 return true;
+            case R.id.knife:
+                view.showKnifeTools();
+                return true;
             case R.id.attachment:
-//                startAttachmentActivity(note);
                 view.startAttachmentActivityForResult(note);
                 return true;
             case android.R.id.home:
@@ -84,14 +85,6 @@ public class NotePresenter implements Presenter, android.view.View.OnFocusChange
             default:
                 return false;
         }
-    }
-
-    private void startAttachmentActivity(SNote value) {
-        Intent intent = new Intent(mContext, AttachmentActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(CURRENT_NOTE, value);
-        intent.putExtras(bundle);
-        mContext.startActivity(intent);
     }
 
     private void startNoteActivity(int type, SNote value) {

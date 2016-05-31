@@ -286,11 +286,14 @@ public class EverNoteUtils {
         Note note = new Note();
         note.setTitle(sNote.getLabel());
         resources = mFinalDb.findAllByWhere(Attachment.class, "noteId=\"" + sNote.getId() + "\"");
+//        String content = EvernoteUtil.NOTE_PREFIX
+//                + sNote.getContent().
+//                replace("<", "&lt;").
+//                replace(">", "&gt;").
+//                replace("\n", "<br/>");
         String content = EvernoteUtil.NOTE_PREFIX
-                + sNote.getContent().
-                replace("<", "&lt;").
-                replace(">", "&gt;").
-                replace("\n", "<br/>");
+                + sNote.getContent()
+                .replace("<br>", "<br/>");
         if (resources != null && resources.size() > 0) {
             for (Attachment attachment : resources) {
                 InputStream in = null;

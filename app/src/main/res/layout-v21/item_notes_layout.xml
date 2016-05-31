@@ -36,16 +36,27 @@
                 android:textSize="@dimen/text_normal"
                 tools:text="Label Text" />
 
-            <TextView
+            <io.github.mthli.knife.KnifeText
                 android:id="@+id/note_content_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@null"
                 android:ellipsize="end"
                 android:lineSpacingExtra="2dp"
                 android:maxLines="14"
                 android:padding="6dp"
                 android:textColor="?android:textColorSecondary"
                 android:textSize="@dimen/text_small"
+                app:bulletColor="?attr/colorPrimary"
+                app:bulletGapWidth="@dimen/bullet_gap_width"
+                app:bulletRadius="@dimen/bullet_radius"
+                app:historyEnable="true"
+                app:historySize="99"
+                app:linkColor="?attr/colorPrimary"
+                app:linkUnderline="false"
+                app:quoteCapWidth="@dimen/quote_gap_width"
+                app:quoteColor="?attr/colorPrimary"
+                app:quoteStripeWidth="@dimen/quote_stripe_width"
                 tools:text="Content Text" />
 
             <TextView

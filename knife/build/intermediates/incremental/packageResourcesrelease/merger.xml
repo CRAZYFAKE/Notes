@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="F:\Notes\knife\src\main\res"><file path="F:\Notes\knife\src\main\res\values\attrs.xml" qualifiers=""><declare-styleable name="KnifeText">
+        <attr format="reference|color" name="bulletColor"/>
+        <attr format="reference|dimension" name="bulletRadius"/>
+        <attr format="reference|dimension" name="bulletGapWidth"/>
+        <attr format="reference|boolean" name="historyEnable"/>
+        <attr format="reference|integer" name="historySize"/>
+        <attr format="reference|color" name="linkColor"/>
+        <attr format="reference|boolean" name="linkUnderline"/>
+        <attr format="reference|color" name="quoteColor"/>
+        <attr format="reference|dimension" name="quoteStripeWidth"/>
+        <attr format="reference|dimension" name="quoteCapWidth"/>
+    </declare-styleable></file><file path="F:\Notes\knife\src\main\res\values\strings.xml" qualifiers=""><string name="app_name">Knife</string></file></source><source path="F:\Notes\knife\build\generated\res\rs\release"/><source path="F:\Notes\knife\build\generated\res\resValues\release"/></dataSet><dataSet config="release"><source path="F:\Notes\knife\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="KnifeText"><attr format="reference|color" name="bulletColor"/><attr format="reference|dimension" name="bulletRadius"/><attr format="reference|dimension" name="bulletGapWidth"/><attr format="reference|boolean" name="historyEnable"/><attr format="reference|integer" name="historySize"/><attr format="reference|color" name="linkColor"/><attr format="reference|boolean" name="linkUnderline"/><attr format="reference|color" name="quoteColor"/><attr format="reference|dimension" name="quoteStripeWidth"/><attr format="reference|dimension" name="quoteCapWidth"/></declare-styleable></configuration></mergedItems></merger>

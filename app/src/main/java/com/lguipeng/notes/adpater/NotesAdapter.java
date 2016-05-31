@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filterable{
+public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filterable {
 
     private final List<SNote> originalList;
     private Context mContext;
+
     public NotesAdapter(List<SNote> list) {
         super(list);
         originalList = new ArrayList<>(list);
@@ -51,11 +52,12 @@ public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filt
         //TODO
         String label = "";
         if (mContext != null) {
-            boolean b  = TextUtils.equals(mContext.getString(R.string.default_label), note.getLabel());
-            label = b? "": note.getLabel();
+            boolean b = TextUtils.equals(mContext.getString(R.string.default_label), note.getLabel());
+            label = b ? "" : note.getLabel();
         }
         holder.setLabelText(label);
         holder.setContentText(note.getContent());
+        holder.setContentFocusable();
         holder.setTimeText(TimeUtils.getConciseTime(note.getLastOprTime(), mContext));
         animate(viewHolder, position);
     }
@@ -67,7 +69,7 @@ public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filt
 
     @Override
     protected Animator[] getAnimators(View view) {
-        if (view.getMeasuredHeight() <=0){
+        if (view.getMeasuredHeight() <= 0) {
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1.05f, 1.0f);
             ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1.05f, 1.0f);
             return new ObjectAnimator[]{scaleX, scaleY};
@@ -85,7 +87,7 @@ public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filt
         originalList.addAll(list);
     }
 
-    private static class NoteFilter extends Filter{
+    private static class NoteFilter extends Filter {
 
         private final NotesAdapter adapter;
 
@@ -107,7 +109,7 @@ public class NotesAdapter extends BaseRecyclerViewAdapter<SNote> implements Filt
             if (constraint.length() == 0) {
                 filteredList.addAll(originalList);
             } else {
-                for ( SNote note : originalList) {
+                for (SNote note : originalList) {
                     if (note.getContent().contains(constraint) || note.getLabel().contains(constraint)) {
                         filteredList.add(note);
                     }

@@ -7,6 +7,11 @@
         android:title="@string/done"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/knife"
+        android:icon="@drawable/ic_format"
+        android:title="@string/knife"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/attachment"
         android:icon="@drawable/ic_add_attachment"
         android:title="@string/attach"
