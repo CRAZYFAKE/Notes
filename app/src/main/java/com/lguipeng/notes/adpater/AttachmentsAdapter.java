@@ -60,11 +60,6 @@ public class AttachmentsAdapter extends BaseRecyclerViewAdapter<Attachment> {
      */
     public int findCurFileSign(String suffix) {
         int resID = R.drawable.ic_attach_file;
-//        for (int i = 0; i < RESID_MapTable.length; i++) {
-//            if (suffix.equals(RESID_MapTable[i][0])) {
-//                resID = Integer.parseInt(RESID_MapTable[i][1]);
-//            }
-//        }
         if (("mpga").equals(suffix) || ("png").equals(suffix) || ("bmp").equals(suffix) ||
                 ("gif").equals(suffix) || ("jpeg").equals(suffix) || ("jpg").equals(suffix)) {
             resID = R.drawable.ic_attach_image;

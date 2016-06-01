@@ -68,8 +68,8 @@ public class AttachmentActivity extends BaseActivity {
     private FinalDb mFinalDb;
     private SNote mCurrentNote;
     private int mNoteId;
-    private String mNoteGuid;
     private Context mContext;
+    private Attachment attachment;
     private int mIsChanged;//0-》未改变，1-》改变了
 
 
@@ -87,7 +87,6 @@ public class AttachmentActivity extends BaseActivity {
     private void initData() {
         mFinalDb = FinalDb.create(this);
         mCurrentNote = (SNote) getIntent().getExtras().getSerializable(NotePresenter.CURRENT_NOTE);
-        mNoteGuid = mCurrentNote.getGuid();
         mNoteId = mCurrentNote.getId();
         mIsChanged = 0;
         attachmentList = new ArrayList<Attachment>();
@@ -99,10 +98,12 @@ public class AttachmentActivity extends BaseActivity {
         initRecyclerView(attachmentList);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     public void initRecyclerView(List<Attachment> attachments) {
-        if (attachments.size() <= 0) {
-            return;
-        }
         mAttachmentsAdapter = new AttachmentsAdapter(attachments, this);
         mAttachmentsView.setHasFixedSize(true);
         mAttachmentsAdapter.setOnInViewClickListener(R.id.attachment_more,
@@ -220,7 +221,7 @@ public class AttachmentActivity extends BaseActivity {
      * @param data
      */
     public void saveAudio(Intent data) {
-        Attachment attachment = new Attachment();
+        attachment = new Attachment();
         String path = "";
         String fileName = "";
         String mimeType = "";
@@ -253,14 +254,14 @@ public class AttachmentActivity extends BaseActivity {
         attachment.setPath(path);
         attachment.setNoteId(mNoteId);
         mFinalDb.saveBindId(attachment);
+        mAttachmentsAdapter.add(attachment);
         mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
         mFinalDb.update(mCurrentNote);
-        mAttachmentsAdapter.add(attachment);
         mIsChanged = 1;
     }
 
     public void saveImage(Intent data) {
-        Attachment attachment = new Attachment();
+        attachment = new Attachment();
         String path = "";
         String fileName = "";
         String mimeType = "";
@@ -292,10 +293,10 @@ public class AttachmentActivity extends BaseActivity {
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
         attachment.setNoteId(mNoteId);
+        mAttachmentsAdapter.add(attachment);
         mFinalDb.saveBindId(attachment);
         mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
         mFinalDb.update(mCurrentNote);
-        mAttachmentsAdapter.add(attachment);
         mIsChanged = 1;
     }
 
@@ -305,7 +306,7 @@ public class AttachmentActivity extends BaseActivity {
      * @param data 文件数据
      */
     public void saveFile(Intent data) {
-        Attachment attachment = new Attachment();
+        attachment = new Attachment();
         Uri attach = data.getData();
         String path = attach.getPath();
         String fileName = FileUtils.getFileName(path);
@@ -317,10 +318,10 @@ public class AttachmentActivity extends BaseActivity {
         attachment.setMimeType(mimeType);
         attachment.setPath(path);
         attachment.setNoteId(mNoteId);
+        mAttachmentsAdapter.add(attachment);
         mFinalDb.saveBindId(attachment);
         mCurrentNote.setStatus(SNote.Status.NEED_PUSH.getValue());
         mFinalDb.update(mCurrentNote);
-        mAttachmentsAdapter.add(attachment);
         mIsChanged = 1;
     }
 

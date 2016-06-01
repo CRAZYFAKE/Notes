@@ -213,7 +213,6 @@ public class NoteActivity extends BaseActivity implements NoteView {
 
     @Override
     public String getContentText() {
-//        return contentEditText.getText().toString();
         return contentEditText.toHtml();
     }
 
